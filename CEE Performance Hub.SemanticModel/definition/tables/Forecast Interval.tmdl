@@ -1,0 +1,77 @@
+/// Coherent forward prediction intervals at Total / Country / Category / Series level, from 2,000 correlated bootstrap paths.
+table 'Forecast Interval'
+	lineageTag: fb6f027b-a6f5-4413-bb9d-1fe6bac32bdd
+
+	column Month
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: c2d182f8-7cc2-485a-a0dc-1079e05e6fc6
+		sourceColumn: Month
+
+	column Level
+		dataType: string
+		isHidden
+		lineageTag: ca331d09-eaa5-4107-895e-9e7416a0cac1
+		sourceColumn: Level
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: 48d4cc03-2cd0-4cec-a3f4-8c978422e50a
+		sourceColumn: Country Code
+
+	column 'Category ID'
+		dataType: string
+		isHidden
+		lineageTag: cf96f6e0-268f-42f8-a71c-acd749baeb6d
+		sourceColumn: Category ID
+
+	column 'Forecast EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: fd2e0c08-30d1-4d81-ba86-f0764fde496a
+		summarizeBy: none
+		sourceColumn: Forecast EUR
+
+	column 'Lower 95'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: f3af9252-712d-4a57-9b0b-c71382162744
+		summarizeBy: none
+		sourceColumn: Lower 95
+
+	column 'Lower 80'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 91ff73c5-5948-411a-bfa8-0a55dd44fbb6
+		summarizeBy: none
+		sourceColumn: Lower 80
+
+	column 'Upper 80'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 8649711a-7220-4164-b994-a9d903740d97
+		summarizeBy: none
+		sourceColumn: Upper 80
+
+	column 'Upper 95'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 074405a7-7d85-41d9-93eb-6aaad33d0209
+		summarizeBy: none
+		sourceColumn: Upper 95
+
+	partition 'Forecast Interval' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "forecast_interval.parquet"))
+				in
+				    Source
+

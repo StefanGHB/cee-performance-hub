@@ -1,0 +1,47 @@
+/// Operating expenses actual vs budget (GL). Grain: month x country x account.
+table Opex
+	lineageTag: 683d3280-38fe-4c6a-b755-d689a8d37462
+
+	column Month
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: 2138604a-0a34-43af-91ac-9d49f99f2fee
+		sourceColumn: Month
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: a8eb07c6-b800-46f7-b99f-b3a58a54fbf4
+		sourceColumn: Country Code
+
+	column 'P&L Key'
+		dataType: string
+		isHidden
+		lineageTag: 895a2f71-e34c-4194-9cdc-c90974ea0f59
+		sourceColumn: P&L Key
+
+	column 'Actual EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: ad1ff6dd-bd50-4d6b-9ffe-dd9f9e9c7d5b
+		summarizeBy: none
+		sourceColumn: Actual EUR
+
+	column 'Budget EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 6061c9c1-002b-417e-90d7-bc1b3f11b41e
+		summarizeBy: none
+		sourceColumn: Budget EUR
+
+	partition Opex = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fact_opex.parquet"))
+				in
+				    Source
+

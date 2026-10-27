@@ -1,0 +1,1236 @@
+/// Home table for all report measures (organised in display folders).
+table _Measures
+	lineageTag: bbeb0c54-fcc5-49a9-81c5-d6d1a097d8bf
+
+	/// Invoiced net sales in EUR (gross sales less discounts & promotions), converted at monthly average FX.
+	measure 'Net Sales' = SUM(Sales[Net Sales EUR])
+		formatString: €#,0
+		displayFolder: 01 Sales
+		lineageTag: f26ab5cf-544d-48c7-ba1f-32508a4b6c41
+
+	/// Delivered quantity x list price, EUR.
+	measure 'Gross Sales' = SUM(Sales[Gross Sales EUR])
+		formatString: €#,0
+		displayFolder: 01 Sales
+		lineageTag: 147e9e85-f437-4c86-8bc3-49f1494e2433
+
+	/// Trade discounts and promotional allowances, EUR.
+	measure Discounts = SUM(Sales[Discount EUR])
+		formatString: €#,0
+		displayFolder: 01 Sales
+		lineageTag: df14ed65-e82e-4f8e-8715-8e0cfa0584d8
+
+	/// Discounts as % of gross sales.
+	measure 'Discount %' = DIVIDE([Discounts], [Gross Sales])
+		formatString: 0.0%
+		displayFolder: 01 Sales
+		lineageTag: 77896dd3-df6f-4d43-bdfc-5c4e3adf8726
+
+	/// Delivered units (cases).
+	measure Units = SUM(Sales[Qty Delivered])
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: fb1efc69-30f2-4351-bf74-5baa4e6e4ec9
+
+	/// Number of distinct sales orders.
+	measure Orders = DISTINCTCOUNT(Sales[Order ID])
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: d3f704ce-d988-4825-973c-e07501990186
+
+	/// Number of order lines.
+	measure 'Order Lines' = COUNTROWS(Sales)
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: a9b5ad67-39d9-45ca-987a-0b1e947cf600
+
+	/// Net sales per order.
+	measure 'Avg Order Value' = DIVIDE([Net Sales], [Orders])
+		formatString: €#,0
+		displayFolder: 01 Sales
+		lineageTag: e8ae3837-4fde-4a3f-8f4f-acfc4c2eb61a
+
+	/// Net sales per delivered unit.
+	measure 'Avg Net Price per Unit' = DIVIDE([Net Sales], [Units])
+		formatString: €#,0.00
+		displayFolder: 01 Sales
+		lineageTag: 56de1b9e-a227-45dc-975b-7f16b34a0bd5
+
+	/// Share of net sales sold on promotion.
+	measure 'Promo Sales %' = DIVIDE(CALCULATE([Net Sales], Sales[Is Promo] = 1), [Net Sales])
+		formatString: 0.0%
+		displayFolder: 01 Sales
+		lineageTag: 04491546-4f66-44fc-b919-8a8fa1dcf4fe
+
+	/// Customers with at least one invoice in the period.
+	measure 'Active Customers' = DISTINCTCOUNT(Sales[Customer Code])
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: eecf4cfd-2525-41fd-b4fd-6f7058140a35
+
+	/// Average net sales per active customer.
+	measure 'Net Sales per Customer' = DIVIDE([Net Sales], [Active Customers])
+		formatString: €#,0
+		displayFolder: 01 Sales
+		lineageTag: e2340b2e-51e9-4ab1-a226-af4f388d39df
+
+	/// Customers acquired (CRM 'customer since' date) in the period that already placed an order.
+	measure 'New Customers' =
+			VAR _start = MIN('Date'[Date])
+			VAR _end = MAX('Date'[Date])
+			RETURN
+			    IF(
+			        NOT ISBLANK([Net Sales]),
+			        COUNTROWS(
+			            FILTER(
+			                VALUES(Sales[Customer Code]),
+			                VAR _since = LOOKUPVALUE(Customer[Customer Since], Customer[Customer Code], Sales[Customer Code])
+			                RETURN _since >= _start && _since <= _end
+			            )
+			        ) + 0
+			    )
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: bda33891-8dfc-4958-8c22-1491c9a62737
+
+	/// Customers whose CRM churn date falls in the period.
+	measure 'Churned Customers' =
+			VAR _start = MIN('Date'[Date])
+			VAR _end = MAX('Date'[Date])
+			VAR _customers = CALCULATETABLE(VALUES(Sales[Customer Code]), REMOVEFILTERS('Date'))
+			RETURN
+			    IF(
+			        _start <= [Last Actual Date],
+			        COUNTROWS(
+			            FILTER(
+			                _customers,
+			                VAR _churn = LOOKUPVALUE(Customer[Churn Date], Customer[Customer Code], Sales[Customer Code])
+			                RETURN NOT ISBLANK(_churn) && _churn >= _start && _churn <= _end
+			            )
+			        ) + 0
+			    )
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: da977971-7193-4353-aae2-a04ed15041b9
+
+	/// Net value of ordered quantity that was not delivered (short shipments) - lost sales opportunity.
+	measure 'Unfulfilled Demand' = SUM(Sales[Unfulfilled Net EUR])
+		formatString: €#,0
+		displayFolder: 01 Sales
+		lineageTag: 1ff20805-0859-43bb-abcf-d25899ccc37f
+
+	/// Unfulfilled demand as % of total demand.
+	measure 'Unfulfilled Demand %' = DIVIDE([Unfulfilled Demand], [Net Sales] + [Unfulfilled Demand])
+		formatString: 0.0%
+		displayFolder: 01 Sales
+		lineageTag: bdb73d8c-5c21-437a-8255-f4fc2ada72a4
+
+	/// Net sales in the country's functional currency. Blank when several currencies are mixed. BGN history restated to EUR at 1.95583.
+	measure 'Net Sales LCY' =
+			IF(
+			    DISTINCTCOUNT(Sales[Functional Currency]) = 1,
+			    SUM(Sales[Net Sales LCY])
+			)
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: 46ee2e75-6ff0-4b59-adc8-dc7d331ca3ef
+
+	/// Rank of the customer by net sales within the current selection.
+	measure 'Customer Rank' =
+			IF(
+			    HASONEVALUE(Customer[Customer Code]) && NOT ISBLANK([Net Sales]),
+			    RANKX(ALLSELECTED(Customer), [Net Sales], , DESC, Dense)
+			)
+		formatString: #,0
+		displayFolder: 01 Sales
+		lineageTag: 2f2b7e30-ca8b-4490-a952-eb3bad433ef0
+
+	/// Pareto: cumulative share of net sales of customers ranked at or above the current customer.
+	measure 'Cumulative Customer Share %' =
+			VAR _total = CALCULATE([Net Sales], ALLSELECTED(Customer))
+			VAR _current = [Net Sales]
+			VAR _tbl =
+			    FILTER(
+			        ADDCOLUMNS(ALLSELECTED(Customer), "@ns", [Net Sales]),
+			        NOT ISBLANK([@ns])
+			    )
+			VAR _cum = SUMX(FILTER(_tbl, [@ns] >= _current), [@ns])
+			RETURN IF(NOT ISBLANK(_current), DIVIDE(_cum, _total))
+		formatString: 0.0%
+		displayFolder: 01 Sales
+		lineageTag: 5a9a9a1f-56d4-481a-b77e-0b6780027513
+
+	/// Share of net sales generated by the top 20% of customers (concentration risk).
+	measure 'Top 20% Customers Share' =
+			VAR _tbl =
+			    FILTER(ADDCOLUMNS(VALUES(Sales[Customer Code]), "@ns", [Net Sales]), [@ns] > 0)
+			VAR _n = COUNTROWS(_tbl)
+			VAR _top = TOPN(ROUNDUP(_n * 0.2, 0), _tbl, [@ns], DESC)
+			RETURN DIVIDE(SUMX(_top, [@ns]), SUMX(_tbl, [@ns]))
+		formatString: 0.0%
+		displayFolder: 01 Sales
+		lineageTag: 9b31be73-08f2-42a7-ac83-03ba31e16a2c
+
+	/// Cost of goods sold at standard cost, EUR.
+	measure COGS = SUM(Sales[COGS EUR])
+		formatString: €#,0
+		displayFolder: 02 Profitability
+		lineageTag: 51fe7aa2-b251-4846-832e-60f8016ead7b
+
+	/// Net sales less COGS.
+	measure 'Gross Margin' = [Net Sales] - [COGS]
+		formatString: €#,0
+		displayFolder: 02 Profitability
+		lineageTag: 40ecce86-585d-4aa2-aba7-292a3eaff66a
+
+	/// Gross margin as % of net sales.
+	measure 'Gross Margin %' = DIVIDE([Gross Margin], [Net Sales])
+		formatString: 0.0%
+		displayFolder: 02 Profitability
+		lineageTag: 47da18ea-5c33-4e14-9a5a-1591832d902f
+
+	/// Operating expenses (GL actuals). Not allocated to products, customers or warehouses - blank at those levels.
+	measure Opex =
+			IF(
+			    NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)),
+			    SUM(Opex[Actual EUR])
+			)
+		formatString: €#,0
+		displayFolder: 02 Profitability
+		lineageTag: fe5cdbda-237c-461d-8a3c-44a183e7a9ac
+
+	/// Operating expenses as % of net sales.
+	measure 'Opex % of Sales' = DIVIDE([Opex], [Net Sales])
+		formatString: 0.0%
+		displayFolder: 02 Profitability
+		lineageTag: 97bc3d45-b0d6-4a34-82f9-b1f1ca3893ac
+
+	/// Logistics & transport cost as % of net sales.
+	measure 'Logistics Cost % of Sales' = DIVIDE(CALCULATE([Opex], 'P&L Line'[P&L Key] = "6100"), [Net Sales])
+		formatString: 0.0%
+		displayFolder: 02 Profitability
+		lineageTag: 4ea7eeee-7e14-49ae-afeb-9d396c9db0b4
+
+	/// Gross margin less operating expenses. Available at company / country / period level.
+	measure EBITDA = IF(NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), [Gross Margin] - [Opex])
+		formatString: €#,0
+		displayFolder: 02 Profitability
+		lineageTag: d435ec2f-37ea-474e-96de-6a0e1730e739
+
+	/// EBITDA margin.
+	measure 'EBITDA %' = DIVIDE([EBITDA], [Net Sales])
+		formatString: 0.0%
+		displayFolder: 02 Profitability
+		lineageTag: 04529872-07af-44de-8ddd-df52a62577bb
+
+	/// FP&A budget net sales (set at month x country x category).
+	measure 'Budget Net Sales' = IF(NOT (ISFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), SUM(Budget[Budget Net Sales EUR]))
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: ba961004-0614-4ce1-8c03-4d3f8ecc1f3e
+
+	/// FP&A budget gross margin.
+	measure 'Budget Gross Margin' = IF(NOT (ISFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), SUM(Budget[Budget Gross Margin EUR]))
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: f9a73857-5a0e-41f6-b336-92a94b29cf81
+
+	/// Budget cost of goods sold.
+	measure 'Budget COGS' = [Budget Net Sales] - [Budget Gross Margin]
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: 5681519c-4a46-46f3-99ec-b3648043e16b
+
+	/// Budget gross margin %.
+	measure 'Budget Gross Margin %' = DIVIDE([Budget Gross Margin], [Budget Net Sales])
+		formatString: 0.0%
+		displayFolder: 03 Budget
+		lineageTag: ca2020b2-7f1d-4391-9b2f-8e19137314a6
+
+	/// Budget operating expenses.
+	measure 'Budget Opex' = IF(NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), SUM(Opex[Budget EUR]))
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: 0b60059a-36c3-4ac9-9902-a95d8c1cf607
+
+	/// Budget EBITDA.
+	measure 'Budget EBITDA' = [Budget Gross Margin] - [Budget Opex]
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: 5b27a43f-f7bb-4615-bed3-3a2ad2b39813
+
+	/// Budget EBITDA margin.
+	measure 'Budget EBITDA %' = DIVIDE([Budget EBITDA], [Budget Net Sales])
+		formatString: 0.0%
+		displayFolder: 03 Budget
+		lineageTag: 7817baf6-e421-49b8-8109-68b544d229e6
+
+	/// Budget for the months that already have actuals - the like-for-like comparison base.
+	measure 'Budget Net Sales (Closed Periods)' = CALCULATE([Budget Net Sales], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: 3034963a-65cb-426f-9700-fc4ce0a9c7ee
+
+	/// Budget gross margin for closed months.
+	measure 'Budget Gross Margin (Closed Periods)' = CALCULATE([Budget Gross Margin], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: abb9d208-e0b4-46f8-ba7f-04ed1b870544
+
+	/// Budget EBITDA for closed months.
+	measure 'Budget EBITDA (Closed Periods)' = CALCULATE([Budget EBITDA], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 03 Budget
+		lineageTag: 0d863c22-2fec-4dd1-ab33-9a61da3ec918
+
+	/// Actual net sales minus budget (closed months only).
+	measure 'Net Sales vs Budget' = IF(NOT ISBLANK([Net Sales]) && NOT ISBLANK([Budget Net Sales (Closed Periods)]), [Net Sales] - [Budget Net Sales (Closed Periods)])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 03 Budget
+		lineageTag: ee279906-5ade-4e14-a813-137e40d2d678
+
+	/// Net sales variance to budget, %.
+	measure 'Net Sales vs Budget %' = DIVIDE([Net Sales vs Budget], [Budget Net Sales (Closed Periods)])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 03 Budget
+		lineageTag: 5d31207c-3eb8-4ab4-88f7-083180ce1a08
+
+	/// Actual net sales as % of budget (closed months).
+	measure 'Budget Achievement %' = DIVIDE([Net Sales], [Budget Net Sales (Closed Periods)])
+		formatString: 0.0%
+		displayFolder: 03 Budget
+		lineageTag: 29910a16-7b21-4c7a-abea-c9c863bc730d
+
+	/// Gross margin variance to budget (closed months).
+	measure 'Gross Margin vs Budget' = IF(NOT ISBLANK([Gross Margin]) && NOT ISBLANK([Budget Gross Margin (Closed Periods)]), [Gross Margin] - [Budget Gross Margin (Closed Periods)])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 03 Budget
+		lineageTag: 5c04b066-69a7-41c2-aaeb-76e08fcca8af
+
+	/// Gross margin % difference to budget in percentage points.
+	measure 'Gross Margin % vs Budget (pp)' =
+			VAR _b = DIVIDE([Budget Gross Margin (Closed Periods)], [Budget Net Sales (Closed Periods)])
+			RETURN IF(NOT ISBLANK([Gross Margin %]) && NOT ISBLANK(_b), ([Gross Margin %] - _b) * 100)
+		formatString: +0.0 "pp";-0.0 "pp";0.0 "pp"
+		displayFolder: 03 Budget
+		lineageTag: 18b30f25-bdaf-4188-b6ce-22bdcfdd3d60
+
+	/// EBITDA variance to budget (closed months).
+	measure 'EBITDA vs Budget' = IF(NOT ISBLANK([EBITDA]) && NOT ISBLANK([Budget EBITDA (Closed Periods)]), [EBITDA] - [Budget EBITDA (Closed Periods)])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 03 Budget
+		lineageTag: b8f94bde-2888-4160-91f7-4d77adeccc7d
+
+	/// Order lines delivered on time AND in full (lines with an invalid delivery date excluded).
+	measure 'OTIF %' = AVERAGE(Sales[OTIF])
+		formatString: 0.0%
+		displayFolder: 06 Operations
+		lineageTag: 28750199-f724-4644-96d9-8280877f8b85
+
+	/// Order lines delivered on or before the promised date.
+	measure 'On-Time %' = AVERAGE(Sales[On Time])
+		formatString: 0.0%
+		displayFolder: 06 Operations
+		lineageTag: e6e0de3d-b5f8-4463-9f17-2e6df831dc7f
+
+	/// Order lines delivered with the full ordered quantity.
+	measure 'In-Full %' = AVERAGE(Sales[In Full])
+		formatString: 0.0%
+		displayFolder: 06 Operations
+		lineageTag: 4079344a-a757-4eb8-81a5-762e785c5633
+
+	/// Delivered units / ordered units.
+	measure 'Fill Rate %' = DIVIDE(SUM(Sales[Qty Delivered]), SUM(Sales[Qty Ordered]))
+		formatString: 0.0%
+		displayFolder: 06 Operations
+		lineageTag: 5e4a96bc-b93e-4a35-8af6-3c666c0e0f29
+
+	/// Service-level target for OTIF.
+	measure 'OTIF Target' = 0.95
+		formatString: 0.0%
+		displayFolder: 06 Operations
+		lineageTag: b52b9c02-e40c-457b-98ce-c7854e0b0c36
+
+	/// OTIF gap to target, percentage points.
+	measure 'OTIF vs Target (pp)' = IF(NOT ISBLANK([OTIF %]), ([OTIF %] - [OTIF Target]) * 100)
+		formatString: +0.0 "pp";-0.0 "pp";0.0 "pp"
+		displayFolder: 06 Operations
+		lineageTag: 4ab0d8d4-25dd-4573-943b-f3f7f3e55ad1
+
+	/// Average days from order to delivery.
+	measure 'Avg Lead Time (days)' = AVERAGE(Sales[Lead Time Days])
+		formatString: #,0.0
+		displayFolder: 06 Operations
+		lineageTag: 4b6a8aae-fd4c-4745-822e-739bdecb464b
+
+	/// Order lines delivered after the promised date.
+	measure 'Late Lines' = CALCULATE(COUNTROWS(Sales), Sales[On Time] = 0)
+		formatString: #,0
+		displayFolder: 06 Operations
+		lineageTag: 93e258d3-aef1-450c-9369-af919feffd14
+
+	/// Closing inventory value at standard cost (semi-additive: last month-end in the period).
+	measure 'Inventory Value' =
+			VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))
+			RETURN CALCULATE(SUM(Inventory[On Hand Value EUR]), 'Date'[Date] = _lastSnapshot)
+		formatString: €#,0
+		displayFolder: 06 Operations
+		lineageTag: f29a65e5-df7d-431b-8c8a-0e2f67970505
+
+	/// Closing inventory units (last month-end in the period).
+	measure 'Inventory Units' =
+			VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))
+			RETURN CALCULATE(SUM(Inventory[On Hand Qty]), 'Date'[Date] = _lastSnapshot)
+		formatString: #,0
+		displayFolder: 06 Operations
+		lineageTag: 1d374f2e-66b6-461b-8aa3-57db01d2a8e0
+
+	/// Closing inventory / average daily COGS of the trailing 3 months.
+	measure 'Days of Inventory' =
+			VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))
+			VAR _period = DATESINPERIOD('Date'[Date], _lastSnapshot, -3, MONTH)
+			VAR _cogs = CALCULATE([COGS], _period)
+			VAR _days = COUNTROWS(_period)
+			RETURN DIVIDE([Inventory Value], DIVIDE(_cogs, _days))
+		formatString: #,0.0
+		displayFolder: 06 Operations
+		lineageTag: 21a4059c-d5a7-423f-8b7c-458b681353c7
+
+	/// SKU x warehouse days out of stock.
+	measure 'Stockout Days' = SUM(Inventory[Stockout Days])
+		formatString: #,0
+		displayFolder: 06 Operations
+		lineageTag: 88234012-7943-4246-b91a-3ac33d5f2b31
+
+	/// Average stock-out days per SKU-warehouse-month.
+	measure 'Stockout Days per SKU' = DIVIDE([Stockout Days], COUNTROWS(Inventory))
+		formatString: #,0.0
+		displayFolder: 06 Operations
+		lineageTag: 0128cb15-765c-4e4d-8aea-528d23fe9420
+
+	/// Closing value of stock of discontinued SKUs (obsolescence risk).
+	measure 'Aged Stock Value' =
+			VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))
+			RETURN CALCULATE(SUM(Inventory[On Hand Value EUR]), 'Date'[Date] = _lastSnapshot, Inventory[Stock Status] = "Discontinued (aged)")
+		formatString: €#,0
+		displayFolder: 06 Operations
+		lineageTag: 4b3d61ce-6c3a-4db7-9831-75b065494058
+
+	/// Aged stock as % of inventory value.
+	measure 'Aged Stock %' = DIVIDE([Aged Stock Value], [Inventory Value])
+		formatString: 0.0%
+		displayFolder: 06 Operations
+		lineageTag: 6e1c7c6d-dd31-48d6-8d2b-10c653209046
+
+	/// Reporting cut-off: last day of the last closed month.
+	measure 'Last Actual Date' = CALCULATE(MAX('Date'[Date]), 'Date'[Is Actual Period] = TRUE(), REMOVEFILTERS('Date'))
+		formatString: dd mmm yyyy
+		displayFolder: 04 Time Intelligence
+		lineageTag: 1930bbbc-bbf4-47fd-ad92-457d5619020b
+
+	/// Net sales in the same period last year (like-for-like: only months that are closed in the current year).
+	measure 'Net Sales PY' = CALCULATE([Net Sales], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: ff8506bd-cae9-4da6-bd75-0cd92f76371e
+
+	/// Net sales change vs prior year.
+	measure 'Net Sales YoY' = IF(NOT ISBLANK([Net Sales]) && NOT ISBLANK([Net Sales PY]), [Net Sales] - [Net Sales PY])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 04 Time Intelligence
+		lineageTag: 23e17135-3115-4879-814c-cb5fd2eda177
+
+	/// Net sales growth vs prior year.
+	measure 'Net Sales YoY %' = DIVIDE([Net Sales YoY], [Net Sales PY])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 742ff271-1dcb-4db8-8dc2-9202c954a249
+
+	/// Year-to-date net sales.
+	measure 'Net Sales YTD' = CALCULATE([Net Sales], DATESYTD('Date'[Date]))
+		formatString: €#,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: 16a0768a-b585-40f8-8f98-73b0a9409107
+
+	/// Prior-year year-to-date net sales (same months).
+	measure 'Net Sales PY YTD' = CALCULATE([Net Sales], CALCULATETABLE(SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])), 'Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: f4000fa5-27bd-4d49-9220-b12a9c119b84
+
+	/// Year-to-date growth vs prior year.
+	measure 'Net Sales YTD YoY %' = DIVIDE([Net Sales YTD] - [Net Sales PY YTD], [Net Sales PY YTD])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 458845e5-6044-4a13-af4e-95104fbdfbff
+
+	/// Rolling 12-month net sales ending at the last closed date in context.
+	measure 'Net Sales R12M' =
+			VAR _end = MIN(MAX('Date'[Date]), [Last Actual Date])
+			RETURN CALCULATE([Net Sales], DATESINPERIOD('Date'[Date], _end, -12, MONTH))
+		formatString: €#,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: 8e3cec70-42f7-4fa4-8857-0489b06c2206
+
+	/// Gross margin, same period last year.
+	measure 'Gross Margin PY' = CALCULATE([Gross Margin], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: 7bf1ee04-67d9-40d6-94a1-e270327d8828
+
+	/// Gross margin growth vs prior year.
+	measure 'Gross Margin YoY %' = DIVIDE([Gross Margin] - [Gross Margin PY], [Gross Margin PY])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 2ddd650d-acc8-42e7-93e6-0c6c8575a4d3
+
+	/// Gross margin %, same period last year.
+	measure 'Gross Margin % PY' = CALCULATE([Gross Margin %], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: 0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 4c245be8-668e-47a5-9b77-ad8da36e0926
+
+	/// Gross margin % change vs prior year, percentage points.
+	measure 'Gross Margin % YoY (pp)' = IF(NOT ISBLANK([Gross Margin %]) && NOT ISBLANK([Gross Margin % PY]), ([Gross Margin %] - [Gross Margin % PY]) * 100)
+		formatString: +0.0 "pp";-0.0 "pp";0.0 "pp"
+		displayFolder: 04 Time Intelligence
+		lineageTag: 10824ac0-7c9f-4a7a-a9f0-40d1428e275c
+
+	/// EBITDA, same period last year.
+	measure 'EBITDA PY' = CALCULATE([EBITDA], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: €#,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: 592ee189-e560-49c7-89a1-801ccc426959
+
+	/// EBITDA growth vs prior year.
+	measure 'EBITDA YoY %' = DIVIDE([EBITDA] - [EBITDA PY], ABS([EBITDA PY]))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 98770e32-9450-462f-a470-cf662e8c6195
+
+	/// EBITDA margin, same period last year.
+	measure 'EBITDA % PY' = CALCULATE([EBITDA %], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: 0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 6ce71779-59aa-48b0-9397-ee57d527b35e
+
+	/// Units, same period last year.
+	measure 'Units PY' = CALCULATE([Units], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: #,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: a5f075d3-9aba-42f8-8d18-5939530e4c36
+
+	/// Active customers, same period last year.
+	measure 'Active Customers PY' = CALCULATE([Active Customers], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: #,0
+		displayFolder: 04 Time Intelligence
+		lineageTag: 7149f975-9922-4d2e-a834-9308aaac2bc6
+
+	/// OTIF, same period last year.
+	measure 'OTIF % PY' = CALCULATE([OTIF %], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		formatString: 0.0%
+		displayFolder: 04 Time Intelligence
+		lineageTag: 82ae27a8-0c1e-4a37-8433-9bea8da5da1d
+
+	/// Current-period local-currency sales translated at prior-year FX rates (constant currency).
+	measure 'Net Sales @ PY FX' = SUM(Sales[Net Sales EUR @PY FX])
+		formatString: €#,0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: 50cb6668-adb8-4742-84ad-d571c669eb82
+
+	/// Translation effect of exchange-rate movements on EUR net sales.
+	measure 'FX Impact' = IF(NOT ISBLANK([Net Sales]), [Net Sales] - [Net Sales @ PY FX])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: 81653be7-1ad7-42e4-876b-db9272be5ac7
+
+	/// Net sales growth excluding FX translation effects.
+	measure 'Constant Currency Growth %' = DIVIDE([Net Sales @ PY FX] - [Net Sales PY], [Net Sales PY])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: fda0ac2c-9876-4845-b4dc-f5b77f74ef4f
+
+	/// Change in net sales explained by total volume at prior-year average price.
+	measure 'Volume Effect' =
+			VAR _unitsCY = [Units]
+			VAR _unitsPY = [Units PY]
+			VAR _avgPricePY = DIVIDE([Net Sales PY], _unitsPY)
+			RETURN IF(NOT ISBLANK(_unitsPY) && NOT ISBLANK(_unitsCY), (_unitsCY - _unitsPY) * _avgPricePY)
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: 5b6fbfbf-533c-404c-be76-767d0f35fb2b
+
+	/// Net price realisation (list price & discount changes) per SKU at constant FX.
+	measure 'Price Effect' =
+			IF(
+			    NOT ISBLANK([Net Sales PY]) && NOT ISBLANK([Net Sales]),
+			    SUMX(
+			        VALUES('Product'[SKU]),
+			        VAR _uCY = [Units]
+			        VAR _uPY = [Units PY]
+			        VAR _pCY = DIVIDE([Net Sales @ PY FX], _uCY)
+			        VAR _pPY = DIVIDE([Net Sales PY], _uPY)
+			        RETURN IF(_uCY > 0 && _uPY > 0, _uCY * (_pCY - _pPY))
+			    )
+			)
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: d141a5be-b692-4c9c-b783-cebb654d7551
+
+	/// FX translation effect (bridge step).
+	measure 'FX Effect' = IF(NOT ISBLANK([Net Sales PY]), [FX Impact])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: 840489ce-1c4f-4c8d-a606-5f2d31fe6cbf
+
+	/// Residual: product / customer mix, new and discontinued SKUs.
+	measure 'Mix & Other Effect' =
+			IF(
+			    NOT ISBLANK([Net Sales PY]) && NOT ISBLANK([Net Sales]),
+			    [Net Sales] - [Net Sales PY] - [Volume Effect] - [Price Effect] - [FX Effect]
+			)
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: 5e88f7f7-3aec-4f99-acca-8e38fcd98145
+
+	/// Value of each step of the net sales bridge (use with 'Bridge Step'[Step] in a waterfall).
+	measure 'Bridge Value' =
+			SWITCH(
+			    SELECTEDVALUE('Bridge Step'[Step]),
+			    "Net Sales PY", [Net Sales PY],
+			    "Volume", [Volume Effect],
+			    "Price", [Price Effect],
+			    "Mix & Other", [Mix & Other Effect],
+			    "FX", [FX Effect]
+			)
+		formatString: €#,0;-€#,0
+		displayFolder: 05 FX & Price-Volume-Mix
+		lineageTag: 9adbc033-0a57-4c2a-8444-4d6b978fb25b
+
+	/// ETS statistical forecast of net sales for open months (Oct 2026 onwards).
+	measure 'Forecast Net Sales' = CALCULATE(SUM(Forecast[Forecast EUR]), Forecast[Forecast Type] = "Forward")
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 67f957a9-7db4-44d8-9e89-8c174a6c7e4d
+
+	/// Lower bound of the 80% prediction interval. Uses coherent intervals of the matching aggregation level (total / country / category / series) from correlated bootstrap simulation.
+	measure 'Forecast Lower 80' =
+			VAR _f = [Forecast Net Sales]
+			VAR _cc = IF(HASONEVALUE(Country[Country Code]), VALUES(Country[Country Code]), "ALL")
+			VAR _cat = IF(HASONEVALUE(Category[Category ID]), VALUES(Category[Category ID]), "ALL")
+			VAR _ratio =
+			    CALCULATE(
+			        DIVIDE(SUM('Forecast Interval'[Lower 80]), SUM('Forecast Interval'[Forecast EUR])),
+			        'Forecast Interval'[Country Code] = _cc,
+			        'Forecast Interval'[Category ID] = _cat
+			    )
+			RETURN IF(NOT ISBLANK(_f), _f * _ratio)
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 14b8564d-b637-4f64-a082-c7c268be1c0d
+
+	/// Upper bound of the 80% prediction interval (coherent across aggregation levels).
+	measure 'Forecast Upper 80' =
+			VAR _f = [Forecast Net Sales]
+			VAR _cc = IF(HASONEVALUE(Country[Country Code]), VALUES(Country[Country Code]), "ALL")
+			VAR _cat = IF(HASONEVALUE(Category[Category ID]), VALUES(Category[Category ID]), "ALL")
+			VAR _ratio =
+			    CALCULATE(
+			        DIVIDE(SUM('Forecast Interval'[Upper 80]), SUM('Forecast Interval'[Forecast EUR])),
+			        'Forecast Interval'[Country Code] = _cc,
+			        'Forecast Interval'[Category ID] = _cat
+			    )
+			RETURN IF(NOT ISBLANK(_f), _f * _ratio)
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 3ace5188-8f20-42aa-a905-3f69900efab5
+
+	/// Lower bound of the 95% prediction interval (coherent across aggregation levels).
+	measure 'Forecast Lower 95' =
+			VAR _f = [Forecast Net Sales]
+			VAR _cc = IF(HASONEVALUE(Country[Country Code]), VALUES(Country[Country Code]), "ALL")
+			VAR _cat = IF(HASONEVALUE(Category[Category ID]), VALUES(Category[Category ID]), "ALL")
+			VAR _ratio =
+			    CALCULATE(
+			        DIVIDE(SUM('Forecast Interval'[Lower 95]), SUM('Forecast Interval'[Forecast EUR])),
+			        'Forecast Interval'[Country Code] = _cc,
+			        'Forecast Interval'[Category ID] = _cat
+			    )
+			RETURN IF(NOT ISBLANK(_f), _f * _ratio)
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 23cfd3ef-c1f5-4ce0-a0bd-e6177eec3156
+
+	/// Upper bound of the 95% prediction interval (coherent across aggregation levels).
+	measure 'Forecast Upper 95' =
+			VAR _f = [Forecast Net Sales]
+			VAR _cc = IF(HASONEVALUE(Country[Country Code]), VALUES(Country[Country Code]), "ALL")
+			VAR _cat = IF(HASONEVALUE(Category[Category ID]), VALUES(Category[Category ID]), "ALL")
+			VAR _ratio =
+			    CALCULATE(
+			        DIVIDE(SUM('Forecast Interval'[Upper 95]), SUM('Forecast Interval'[Forecast EUR])),
+			        'Forecast Interval'[Country Code] = _cc,
+			        'Forecast Interval'[Category ID] = _cat
+			    )
+			RETURN IF(NOT ISBLANK(_f), _f * _ratio)
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 18b66dc4-7058-4c9e-9f72-caee627c4f1e
+
+	/// Forecast series for charts, anchored on the last actual month so the line is continuous.
+	measure 'Forecast Line' =
+			VAR _monthEnd = MAX('Date'[Date])
+			VAR _lastActual = [Last Actual Date]
+			RETURN
+			    IF(
+			        _monthEnd = _lastActual,
+			        [Net Sales],
+			        [Forecast Net Sales]
+			    )
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: df3f7ad9-8fb3-465e-88af-aeda03bfa4a4
+
+	/// Out-of-sample forecast for Apr-Sep 2026 (model trained on data up to Mar 2026).
+	measure 'Back-test Forecast' = CALCULATE(SUM(Forecast[Forecast EUR]), Forecast[Forecast Type] = "Back-test")
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 1142b024-9b71-4f79-96ff-bcd318f32800
+
+	/// Back-test forecast vs actual, %.
+	measure 'Back-test Error %' =
+			VAR _f = [Back-test Forecast]
+			VAR _a = [Back-test Actual]
+			RETURN IF(NOT ISBLANK(_f) && NOT ISBLANK(_a), DIVIDE(_f - _a, _a))
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 07 Forecast
+		lineageTag: c06c4dae-a75a-4b23-a5c6-4b7923dfa1f9
+
+	/// Weighted absolute % error of the ETS model on the 6-month hold-out.
+	measure 'Forecast WAPE' =
+			CALCULATE(
+			    DIVIDE(SUM('Forecast Accuracy'[Abs Error EUR]), SUM('Forecast Accuracy'[Actual EUR])),
+			    'Forecast Accuracy'[Model] = "ETS (damped trend)"
+			)
+		formatString: 0.0%
+		displayFolder: 07 Forecast
+		lineageTag: c420d4d6-b3a5-467e-85a7-5504ba45d2b0
+
+	/// Weighted absolute % error of the seasonal-naive benchmark (same month last year).
+	measure 'Naive WAPE' =
+			CALCULATE(
+			    DIVIDE(SUM('Forecast Accuracy'[Abs Error EUR]), SUM('Forecast Accuracy'[Actual EUR])),
+			    'Forecast Accuracy'[Model] = "Seasonal naive"
+			)
+		formatString: 0.0%
+		displayFolder: 07 Forecast
+		lineageTag: 6905b3bc-d4cf-48be-b1f9-147815eec40f
+
+	/// Error reduction of the ETS model vs the naive benchmark, percentage points.
+	measure 'Forecast Value Added (pp)' = ([Naive WAPE] - [Forecast WAPE]) * 100
+		formatString: +0.0 "pp";-0.0 "pp";0.0 "pp"
+		displayFolder: 07 Forecast
+		lineageTag: 4886ea82-b721-4d07-96a1-3afb20a2c48f
+
+	/// 1 - WAPE.
+	measure 'Forecast Accuracy %' = 1 - [Forecast WAPE]
+		formatString: 0.0%
+		displayFolder: 07 Forecast
+		lineageTag: 2a1decb4-cbb2-4bd5-be61-8aab8cc2845a
+
+	/// Latest estimate: actuals for closed months + statistical forecast for open months.
+	measure 'FY Outlook' = [Net Sales] + [Forecast Net Sales]
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 85a01d12-ddcb-4210-8bf0-d5e4c044267b
+
+	/// Latest estimate minus full-period budget.
+	measure 'FY Outlook vs Budget' = IF(NOT ISBLANK([Budget Net Sales]), [FY Outlook] - [Budget Net Sales])
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 07 Forecast
+		lineageTag: ac286484-fe93-4f5b-8a6c-d15a746a293c
+
+	/// Latest estimate vs budget, %.
+	measure 'FY Outlook vs Budget %' = DIVIDE([FY Outlook vs Budget], [Budget Net Sales])
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 07 Forecast
+		lineageTag: 3eb2cbb6-e214-4326-a7bb-63ec42c1c10c
+
+	/// Latest estimate vs full prior-year actuals.
+	measure 'FY Outlook vs PY %' =
+			VAR _py = CALCULATE([Net Sales], SAMEPERIODLASTYEAR('Date'[Date]))
+			RETURN DIVIDE([FY Outlook] - _py, _py)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 07 Forecast
+		lineageTag: ee03d909-193e-4d9b-b661-06182b042d93
+
+	/// Selected what-if price change.
+	measure 'Price Change %' = SELECTEDVALUE('Scenario Price Change'[Price Change %], 0)
+		formatString: +0%;-0%;0%
+		displayFolder: 08 Scenario
+		lineageTag: 47bb841b-e5d2-438e-a47e-2e254343c9e1
+
+	/// Selected what-if volume change.
+	measure 'Volume Change %' = SELECTEDVALUE('Scenario Volume Change'[Volume Change %], 0)
+		formatString: +0%;-0%;0%
+		displayFolder: 08 Scenario
+		lineageTag: 780d0630-0dd0-4069-809d-2a4d9a751183
+
+	/// Selected what-if COGS inflation.
+	measure 'Cost Inflation %' = SELECTEDVALUE('Scenario Cost Inflation'[Cost Inflation %], 0)
+		formatString: +0%;-0%;0%
+		displayFolder: 08 Scenario
+		lineageTag: 763495fc-181b-4394-9d20-646afc27f8d1
+
+	/// Gross margin % of the last 12 closed months (basis for open-period margin).
+	measure 'R12M Gross Margin %' =
+			VAR _end = [Last Actual Date]
+			RETURN CALCULATE([Gross Margin %], DATESINPERIOD('Date'[Date], _end, -12, MONTH), REMOVEFILTERS('Date'))
+		formatString: 0.0%
+		displayFolder: 08 Scenario
+		lineageTag: 82123033-18e0-4850-9503-3109b29ce9cc
+
+	/// Opex % of sales of the last 12 closed months (basis for open-period opex).
+	measure 'R12M Opex % of Sales' =
+			VAR _end = [Last Actual Date]
+			RETURN CALCULATE([Opex % of Sales], DATESINPERIOD('Date'[Date], _end, -12, MONTH), REMOVEFILTERS('Date'))
+		formatString: 0.0%
+		displayFolder: 08 Scenario
+		lineageTag: 072cf6be-6b59-443c-8138-a166ace90832
+
+	/// Actual gross margin + forecast net sales x trailing GM %.
+	measure 'Outlook Gross Margin (Base)' = [Gross Margin] + [Forecast Net Sales] * [R12M Gross Margin %]
+		formatString: €#,0
+		displayFolder: 08 Scenario
+		lineageTag: db202b98-7a15-42d3-a82f-3dd34184d8e1
+
+	/// Latest-estimate EBITDA before scenario adjustments.
+	measure 'Outlook EBITDA (Base)' =
+			IF(
+			    NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)),
+			    [Outlook Gross Margin (Base)] - [Opex] - [Forecast Net Sales] * [R12M Opex % of Sales]
+			)
+		formatString: €#,0
+		displayFolder: 08 Scenario
+		lineageTag: ec336d85-c0fc-447b-9021-2fbff25ccf91
+
+	/// Latest estimate with what-if price and volume changes applied to open periods.
+	measure 'Scenario Net Sales' = [Net Sales] + [Forecast Net Sales] * (1 + [Price Change %]) * (1 + [Volume Change %])
+		formatString: €#,0
+		displayFolder: 08 Scenario
+		lineageTag: 0b8b721c-4833-4e6f-9da7-be2bf97d1eb4
+
+	/// Scenario gross margin: price changes flow to margin, volume scales COGS, cost inflation raises COGS.
+	measure 'Scenario Gross Margin' =
+			VAR _fc = [Forecast Net Sales]
+			VAR _cogsOpen = _fc * (1 - [R12M Gross Margin %]) * (1 + [Volume Change %]) * (1 + [Cost Inflation %])
+			VAR _salesOpen = _fc * (1 + [Price Change %]) * (1 + [Volume Change %])
+			RETURN [Gross Margin] + _salesOpen - _cogsOpen
+		formatString: €#,0
+		displayFolder: 08 Scenario
+		lineageTag: 09248d67-ab8c-4f4c-bcc2-6aa421af8fbc
+
+	/// Scenario EBITDA. Assumes 60% of opex is variable with volume.
+	measure 'Scenario EBITDA' =
+			IF(
+			    NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)),
+			    VAR _opexOpen = [Forecast Net Sales] * [R12M Opex % of Sales] * (1 + 0.6 * [Volume Change %])
+			    RETURN [Scenario Gross Margin] - [Opex] - _opexOpen
+			)
+		formatString: €#,0
+		displayFolder: 08 Scenario
+		lineageTag: 39688ab0-d902-4152-a2df-4c08a999f445
+
+	/// Scenario EBITDA margin.
+	measure 'Scenario EBITDA %' = DIVIDE([Scenario EBITDA], [Scenario Net Sales])
+		formatString: 0.0%
+		displayFolder: 08 Scenario
+		lineageTag: 42dfaec6-0bc5-48bb-99fe-c3ae5a7d6fe5
+
+	/// Scenario minus base latest estimate.
+	measure 'Scenario Net Sales Impact' = [Scenario Net Sales] - [FY Outlook]
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 08 Scenario
+		lineageTag: 56f2ed21-97d1-4098-93d2-7d4d12f73981
+
+	/// Scenario EBITDA minus base.
+	measure 'Scenario EBITDA Impact' = [Scenario EBITDA] - [Outlook EBITDA (Base)]
+		formatString: +€#,0;-€#,0;€0
+		displayFolder: 08 Scenario
+		lineageTag: c6b5ed44-fbad-4752-b53e-c702257cf115
+
+	/// Number of data-quality rules executed.
+	measure 'DQ Checks' = COUNTROWS('DQ Checks')
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: 1ab24ba3-1053-45e8-8ffc-708e2462766a
+
+	/// Rules within tolerance.
+	measure 'DQ Checks Passed' = CALCULATE(COUNTROWS('DQ Checks'), 'DQ Checks'[Status] = "Pass") + 0
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: 017b0db0-7e9c-479a-acf7-d739186ad881
+
+	/// Rules above tolerance (up to 5x).
+	measure 'DQ Checks Warning' = CALCULATE(COUNTROWS('DQ Checks'), 'DQ Checks'[Status] = "Warning") + 0
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: 58a37310-0f9f-49bb-ae90-2187659d5ec0
+
+	/// Rules above 5x tolerance.
+	measure 'DQ Checks Failed' = CALCULATE(COUNTROWS('DQ Checks'), 'DQ Checks'[Status] = "Fail") + 0
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: e688a581-cfb0-43f7-8da4-0c68fb5b0703
+
+	/// Share of rules passing.
+	measure 'DQ Rule Pass Rate' = DIVIDE([DQ Checks Passed], [DQ Checks])
+		formatString: 0.0%
+		displayFolder: 09 Data Quality
+		lineageTag: 0c203e82-d9f0-4d7f-839f-19349bb54b0a
+
+	/// 1 - failed records / checked records across all rules.
+	measure 'Record Accuracy %' = 1 - DIVIDE(SUM('DQ Checks'[Rows Failed]), SUM('DQ Checks'[Rows Checked]))
+		formatString: 0.00%
+		displayFolder: 09 Data Quality
+		lineageTag: 8e2ea844-2763-42a2-9f10-b98f93d40339
+
+	/// Row-level exceptions logged by the ETL.
+	measure 'DQ Exception Rows' = COUNTROWS('DQ Exceptions') + 0
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: 9f70c4ee-1058-4deb-abbf-1d1417b52c77
+
+	/// Country feeds loaded after the 3-day SLA.
+	measure 'Feeds Loaded Late' = CALCULATE(COUNTROWS('DQ Load Log'), 'DQ Load Log'[SLA Status] = "Late") + 0
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: 4212fba3-a3ba-4d4c-9118-12b20d0aea56
+
+	/// Share of feeds loaded within SLA.
+	measure 'Feed SLA %' = DIVIDE(CALCULATE(COUNTROWS('DQ Load Log'), 'DQ Load Log'[SLA Status] = "Within SLA"), COUNTROWS('DQ Load Log'))
+		formatString: 0.0%
+		displayFolder: 09 Data Quality
+		lineageTag: 8c188eb2-870c-4232-84e3-25edf03143fd
+
+	/// Order lines where a missing discount was imputed (DQ05).
+	measure 'Imputed Discount Lines' = CALCULATE(COUNTROWS(Sales), Sales[Discount Imputed] = 1) + 0
+		formatString: #,0
+		displayFolder: 09 Data Quality
+		lineageTag: c4308129-ce4a-4846-b34b-af1e104822b5
+
+	/// Share of COGS estimated for unmapped SKUs (DQ02).
+	measure 'Estimated COGS Share' = DIVIDE(CALCULATE([COGS], Sales[COGS Estimated] = 1), [COGS])
+		formatString: 0.00%
+		displayFolder: 09 Data Quality
+		lineageTag: d9cb68df-ded1-40d5-a7d1-a4690bebac2b
+
+	/// Reporting cut-off label.
+	measure 'Data As Of' = "Data as of " & FORMAT([Last Actual Date], "d mmm yyyy")
+		displayFolder: 09 Data Quality
+		lineageTag: a19d566a-896f-46c7-b420-c5a130f3f1d9
+
+	/// Green/red by YoY sign.
+	measure 'Color YoY' = IF([Net Sales YoY] >= 0, "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: 35913256-a7a5-4523-b996-1b6ffaeb8a2d
+
+	/// Green/red by budget variance.
+	measure 'Color vs Budget' = IF([Net Sales vs Budget] >= 0, "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: 027e6f82-12f2-424b-8c0e-be4cca8ce903
+
+	/// Traffic light vs OTIF target (>= 95% green, >= 88% amber, else red).
+	measure 'Color OTIF' = SWITCH(TRUE(), ISBLANK([OTIF %]), BLANK(), [OTIF %] >= [OTIF Target], "#1A7F5A", [OTIF %] >= 0.88, "#D98E04", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: f868b31f-a8c7-451b-8576-e93104e4cf5c
+
+	/// Traffic light for data-quality status.
+	measure 'Color DQ Status' = SWITCH(SELECTEDVALUE('DQ Checks'[Status]), "Pass", "#1A7F5A", "Warning", "#D98E04", "Fail", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: 46dc2d36-1b52-486c-a280-426d73a096f2
+
+	/// Green/red by scenario impact.
+	measure 'Color Scenario EBITDA' = IF([Scenario EBITDA Impact] >= 0, "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: 8af19023-81e7-4ec5-898b-126d59e3ed2f
+
+	/// Arrow label for KPI cards.
+	measure 'KPI Net Sales YoY Label' =
+			VAR _v = [Net Sales YoY %]
+			RETURN IF(ISBLANK(_v), "", IF(_v >= 0, "▲ ", "▼ ") & FORMAT(ABS(_v), "0.0%") & " vs PY")
+		displayFolder: 10 Report UI
+		lineageTag: d7d70ad2-e297-49d9-ad08-80faf16306e8
+
+	/// Arrow label for KPI cards.
+	measure 'KPI Net Sales vs Budget Label' =
+			VAR _v = [Net Sales vs Budget %]
+			RETURN IF(ISBLANK(_v), "", IF(_v >= 0, "▲ ", "▼ ") & FORMAT(ABS(_v), "0.0%") & " vs budget")
+		displayFolder: 10 Report UI
+		lineageTag: 04cacee7-7c07-4d6d-bce0-2b439fca99cf
+
+	/// Arrow label for KPI cards.
+	measure 'KPI GM pp Label' =
+			VAR _v = [Gross Margin % YoY (pp)]
+			RETURN IF(ISBLANK(_v), "", IF(_v >= 0, "▲ ", "▼ ") & FORMAT(ABS(_v), "0.0") & " pp vs PY")
+		displayFolder: 10 Report UI
+		lineageTag: 66e236cc-6b09-4c84-b35b-e81b6f989332
+
+	/// Arrow label for KPI cards.
+	measure 'KPI EBITDA Label' =
+			VAR _v = [EBITDA YoY %]
+			RETURN IF(ISBLANK(_v), "", IF(_v >= 0, "▲ ", "▼ ") & FORMAT(ABS(_v), "0.0%") & " vs PY")
+		displayFolder: 10 Report UI
+		lineageTag: 2bf681d4-a07c-4817-b124-0090472f2ba4
+
+	/// Arrow label for KPI cards.
+	measure 'KPI OTIF Label' =
+			VAR _v = [OTIF vs Target (pp)]
+			RETURN IF(ISBLANK(_v), "", IF(_v >= 0, "▲ ", "▼ ") & FORMAT(ABS(_v), "0.0") & " pp vs 95% target")
+		displayFolder: 10 Report UI
+		lineageTag: a1082fb3-c05e-43d2-a6d0-5f070e7783f8
+
+	/// Closed months covered by the current date selection, e.g. 'Jan 2026 – Sep 2026'.
+	measure 'Selected Period' =
+			VAR _min = MIN('Date'[Date])
+			VAR _max = MIN(MAX('Date'[Date]), [Last Actual Date])
+			RETURN
+			    IF(
+			        _max < _min,
+			        "Open period (forecast only)",
+			        FORMAT(_min, "mmm yyyy") & IF(FORMAT(_min, "yyyymm") <> FORMAT(_max, "yyyymm"), " – " & FORMAT(_max, "mmm yyyy"))
+			    )
+		displayFolder: 10 Report UI
+		lineageTag: e3871bfa-06ca-457f-9167-aa1fd2b06309
+
+	/// Auto-generated narrative of the headline KPIs for the current selection.
+	measure 'Executive Summary' =
+			VAR _ns = [Net Sales]
+			VAR _yoy = [Net Sales YoY %]
+			VAR _ccy = [Constant Currency Growth %]
+			VAR _vb = [Net Sales vs Budget]
+			VAR _gm = [Gross Margin %]
+			VAR _gmpp = [Gross Margin % YoY (pp)]
+			VAR _ebitda = [EBITDA %]
+			VAR _otif = [OTIF %]
+			VAR _ctry =
+			    ADDCOLUMNS(VALUES(Country[Country]), "@yoy", [Net Sales YoY], "@vb", [Net Sales vs Budget])
+			VAR _topGrowth = TOPN(1, _ctry, [@yoy], DESC)
+			VAR _worstBudget = TOPN(1, _ctry, [@vb], ASC)
+			VAR _fmtM = "€#,0,,.0""M"""
+			RETURN
+			    IF(
+			        ISBLANK(_ns),
+			        "No closed-period data for the current selection.",
+			        "Net sales of " & FORMAT(_ns, _fmtM) & " are " & FORMAT(_yoy, "+0.0%;-0.0%") & " vs prior year ("
+			            & FORMAT(_ccy, "+0.0%;-0.0%") & " at constant FX) and " & FORMAT(_vb, "+€#,0,,.0""M"";-€#,0,,.0""M""")
+			            & " vs budget. Gross margin is " & FORMAT(_gm, "0.0%") & " (" & FORMAT(_gmpp, "+0.0;-0.0") & " pp YoY), EBITDA margin "
+			            & FORMAT(_ebitda, "0.0%") & " and OTIF " & FORMAT(_otif, "0.0%") & ". "
+			            & IF(COUNTROWS(_ctry) > 1,
+			                "Largest growth contributor: " & MAXX(_topGrowth, Country[Country]) & " (" & FORMAT(MAXX(_topGrowth, [@yoy]), "+€#,0,,.0""M"";-€#,0,,.0""M""")
+			                & "). Largest budget gap: " & MAXX(_worstBudget, Country[Country]) & " (" & FORMAT(MAXX(_worstBudget, [@vb]), "+€#,0,,.0""M"";-€#,0,,.0""M""") & ").",
+			                "")
+			    )
+		displayFolder: 10 Report UI
+		lineageTag: 1565c5ea-2413-44d0-8c1a-65f06510c3ff
+
+	/// Actual net sales for the back-test months only (Apr-Sep 2026).
+	measure 'Back-test Actual' =
+			VAR _months = CALCULATETABLE(VALUES(Forecast[Month]), Forecast[Forecast Type] = "Back-test")
+			RETURN CALCULATE([Net Sales], KEEPFILTERS(TREATAS(_months, 'Date'[Month Start])))
+		formatString: €#,0
+		displayFolder: 07 Forecast
+		lineageTag: 3984a918-f53d-45d5-8f8b-dc358e438368
+
+	/// Management P&L value for the current P&L line: EUR thousands for value lines (costs negative), ratio for % lines. Use with 'P&L Line'[P&L Line] on rows.
+	measure 'P&L Actual' =
+			VAR _k = SELECTEDVALUE('P&L Line'[P&L Key])
+			VAR _v =
+			    SWITCH(
+			        _k,
+			        "GS", [Gross Sales],
+			        "DISC", -[Discounts],
+			        "NS", [Net Sales],
+			        "COGS", -[COGS],
+			        "GM", [Gross Margin],
+			        "GMP", [Gross Margin %],
+			        "OPEX", -CALCULATE([Opex], REMOVEFILTERS('P&L Line')),
+			        "EBITDA", CALCULATE([EBITDA], REMOVEFILTERS('P&L Line')),
+			        "EBITDAP", CALCULATE([EBITDA %], REMOVEFILTERS('P&L Line')),
+			        -[Opex]
+			    )
+			RETURN
+			    IF(NOT ISBLANK(_k), IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, _v, DIVIDE(_v, 1000)))
+		displayFolder: 11 P&L
+		lineageTag: 83e9073b-4f2e-4ee1-90ac-5036d39dd48d
+
+		formatStringDefinition = IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, "0.0%", "#,0;(#,0);-")
+
+	/// Budget for the current P&L line (EUR thousands / ratio), closed months only - like-for-like with actuals.
+	measure 'P&L Budget' =
+			VAR _k = SELECTEDVALUE('P&L Line'[P&L Key])
+			VAR _ns = [Budget Net Sales (Closed Periods)]
+			VAR _gm = [Budget Gross Margin (Closed Periods)]
+			VAR _opexAll = CALCULATE([Budget Opex], REMOVEFILTERS('P&L Line'), KEEPFILTERS('Date'[Is Actual Period] = TRUE()))
+			VAR _v =
+			    SWITCH(
+			        _k,
+			        "GS", BLANK(),
+			        "DISC", BLANK(),
+			        "NS", _ns,
+			        "COGS", -(_ns - _gm),
+			        "GM", _gm,
+			        "GMP", DIVIDE(_gm, _ns),
+			        "OPEX", -_opexAll,
+			        "EBITDA", _gm - _opexAll,
+			        "EBITDAP", DIVIDE(_gm - _opexAll, _ns),
+			        -CALCULATE([Budget Opex], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))
+			    )
+			RETURN
+			    IF(NOT ISBLANK(_k), IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, _v, DIVIDE(_v, 1000)))
+		displayFolder: 11 P&L
+		lineageTag: b9ffba46-c70d-4897-8b7b-4d8cce9c0f34
+
+		formatStringDefinition = IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, "0.0%", "#,0;(#,0);-")
+
+	/// P&L line value for the same period last year.
+	measure 'P&L PY' = CALCULATE([P&L Actual], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+		displayFolder: 11 P&L
+		lineageTag: 4e3c8202-9c73-49a2-90f7-3c2d0bbd866c
+
+		formatStringDefinition = IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, "0.0%", "#,0;(#,0);-")
+
+	/// Actual minus budget in EUR thousands for value lines (positive = favourable, as costs are negative).
+	measure 'P&L vs Budget' =
+			VAR _a = [P&L Actual]
+			VAR _b = [P&L Budget]
+			RETURN IF(NOT ISBLANK(_a) && NOT ISBLANK(_b) && SELECTEDVALUE('P&L Line'[Is Ratio]) <> 1, _a - _b)
+		formatString: +#,0;-#,0;-
+		displayFolder: 11 P&L
+		lineageTag: 7dacd33c-2252-43ba-9b67-8590d2dce49b
+
+	/// Variance to budget: % for value lines, percentage points for ratio lines (positive = favourable).
+	measure 'P&L vs Budget %' =
+			VAR _a = [P&L Actual]
+			VAR _b = [P&L Budget]
+			RETURN
+			    IF(
+			        NOT ISBLANK(_a) && NOT ISBLANK(_b),
+			        IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, (_a - _b) * 100, DIVIDE(_a - _b, ABS(_b)))
+			    )
+		displayFolder: 11 P&L
+		lineageTag: 92e8f6c9-c948-4221-a37a-cde1f8a385d7
+
+		formatStringDefinition = IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, "+0.0"" pp"";-0.0"" pp"";0.0"" pp""", "+0.0%;-0.0%;0.0%")
+
+	/// Change vs prior year: % for value lines, percentage points for ratio lines (positive = favourable).
+	measure 'P&L vs PY %' =
+			VAR _a = [P&L Actual]
+			VAR _p = [P&L PY]
+			RETURN
+			    IF(
+			        NOT ISBLANK(_a) && NOT ISBLANK(_p),
+			        IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, (_a - _p) * 100, DIVIDE(_a - _p, ABS(_p)))
+			    )
+		displayFolder: 11 P&L
+		lineageTag: c7d16994-a807-4f6b-a87b-82187e9a1439
+
+		formatStringDefinition = IF(SELECTEDVALUE('P&L Line'[Is Ratio]) = 1, "+0.0"" pp"";-0.0"" pp"";0.0"" pp""", "+0.0%;-0.0%;0.0%")
+
+	/// Green/red for P&L budget variance.
+	measure 'Color P&L vs Budget' =
+			VAR _v = [P&L vs Budget %]
+			RETURN IF(NOT ISBLANK(_v), IF(_v >= 0, "#1A7F5A", "#C23B3B"))
+		displayFolder: 10 Report UI
+		lineageTag: 8d4f6d73-3ccf-4426-aee9-da374ae351cb
+
+	/// Green/red for P&L change vs prior year.
+	measure 'Color P&L vs PY' =
+			VAR _v = [P&L vs PY %]
+			RETURN IF(NOT ISBLANK(_v), IF(_v >= 0, "#1A7F5A", "#C23B3B"))
+		displayFolder: 10 Report UI
+		lineageTag: db9297a9-b5df-4e13-a5b5-81f3aafc3b0d
+
+	/// Shading for subtotal rows of the P&L matrix.
+	measure 'P&L Row Background' = SWITCH(SELECTEDVALUE('P&L Line'[Line Type]), "Subtotal", "#E8EEF6", "Ratio", "#F7F9FC", "#FFFFFF")
+		displayFolder: 10 Report UI
+		lineageTag: 9bf862c3-4bfc-41de-be82-0a98ca8bfd65
+
+	/// Green/red by gross-margin % change vs PY.
+	measure 'Color GM' = IF([Gross Margin % YoY (pp)] >= 0, "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: d1fccb98-6641-4a11-9da7-fbafdabb259c
+
+	/// Green/red by EBITDA growth vs PY.
+	measure 'Color EBITDA' = IF([EBITDA YoY %] >= 0, "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: b537398d-096a-44bf-a7d7-3359fd00b10b
+
+	/// Green/red by latest estimate vs budget.
+	measure 'Color Outlook' = IF([FY Outlook vs Budget] >= 0, "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: 8858ffe2-a0c6-4780-96ec-18661d09ee7b
+
+	/// Arrow label for the outlook KPI card.
+	measure 'KPI Outlook Label' =
+			VAR _v = [FY Outlook vs Budget %]
+			RETURN IF(ISBLANK(_v), "", IF(_v >= 0, "▲ ", "▼ ") & FORMAT(ABS(_v), "0.0%") & " vs full-year budget")
+		displayFolder: 10 Report UI
+		lineageTag: cf207ec7-b8c0-4ded-afbf-a65aaa1b8ca5
+
+	/// Active customers vs PY label.
+	measure 'KPI Customers Label' =
+			VAR _c = [Active Customers]
+			VAR _p = [Active Customers PY]
+			RETURN IF(ISBLANK(_p), "", IF(_c >= _p, "▲ ", "▼ ") & FORMAT(ABS(_c - _p), "#,0") & " vs PY")
+		displayFolder: 10 Report UI
+		lineageTag: 733e5ee7-ad3d-4dfe-8712-09981230e19b
+
+	/// Green/red by active customers vs PY.
+	measure 'Color Customers' = IF([Active Customers] >= [Active Customers PY], "#1A7F5A", "#C23B3B")
+		displayFolder: 10 Report UI
+		lineageTag: 85d00186-eb57-498e-bd4b-51d650957580
+
+	/// Average days after month-end until the source feed was loaded.
+	measure 'Feed Lag Days' = AVERAGE('DQ Load Log'[Lag Days])
+		formatString: 0.0
+		displayFolder: 09 Data Quality
+		lineageTag: 33ac2350-a4bf-46f3-9990-5e0753fd4a6c
+
+	/// Traffic light for feed timeliness (SLA 3 days).
+	measure 'Color Feed Lag' =
+			VAR _l = [Feed Lag Days]
+			RETURN SWITCH(TRUE(), ISBLANK(_l), BLANK(), _l > 3, "#F4C7C7", _l > 2, "#FBE7C2", "#D5EFE3")
+		displayFolder: 10 Report UI
+		lineageTag: b2c776dd-9ed2-4beb-ae58-c6e821b15150
+
+	/// Soft heat-map background for OTIF (>= 95% green, >= 88% amber, else red).
+	measure 'Color OTIF Background' = SWITCH(TRUE(), ISBLANK([OTIF %]), BLANK(), [OTIF %] >= [OTIF Target], "#D5EFE3", [OTIF %] >= 0.88, "#FBE7C2", "#F4C7C7")
+		displayFolder: 10 Report UI
+		lineageTag: 7e9bb16a-4eeb-4d7e-acea-8b67472e790d
+
+	/// Header text for the customer drill-through page.
+	measure 'Selected Customer' = IF(HASONEVALUE(Customer[Customer]), SELECTEDVALUE(Customer[Customer]) & "  |  " & SELECTEDVALUE(Customer[Channel]) & "  |  " & SELECTEDVALUE(Customer[City]) & " (" & SELECTEDVALUE(Customer[Country Code]) & ")  |  Rep: " & SELECTEDVALUE(Customer[Sales Rep]), "Select a customer and use Drill through")
+		displayFolder: 10 Report UI
+		lineageTag: c7051c73-a88c-4ce4-84d2-fda5f06b8b7a
+
+	/// Bar colour for budget variance charts.
+	measure 'Color Budget Var Bar' = IF([Net Sales vs Budget] >= 0, "#2A9D8F", "#D1495B")
+		displayFolder: 10 Report UI
+		lineageTag: fadbb03e-d566-4eb5-a563-cd7605f49c14
+
+	/// Bar colour for growth charts.
+	measure 'Color YoY Bar' = IF([Net Sales YoY] >= 0, "#1F4E79", "#D1495B")
+		displayFolder: 10 Report UI
+		lineageTag: fc712c1b-7654-43a5-9b87-642d1ddac0f6
+
+	column 'Measure Table'
+		isHidden
+		lineageTag: b34e527c-f5ff-4b4a-a795-ff62d3d1af36
+		isNameInferred
+		sourceColumn: [Measure Table]
+
+	partition _Measures = calculated
+		mode: import
+		source = ROW("Measure Table", BLANK())
+

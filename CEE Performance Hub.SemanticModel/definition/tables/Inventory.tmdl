@@ -1,0 +1,67 @@
+/// Month-end inventory snapshots (WMS). Semi-additive: use closing balance measures.
+table Inventory
+	lineageTag: 8d9b3f5e-4b35-4492-a7b8-b1911faf85c1
+
+	column 'Snapshot Date'
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: dddfee1b-679c-4eac-ba23-933aa9bdbd6c
+		sourceColumn: Snapshot Date
+
+	column 'Warehouse Code'
+		dataType: string
+		isHidden
+		lineageTag: b4caaf6f-e573-4fdc-aca7-bf5cf1bb6856
+		sourceColumn: Warehouse Code
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: 48d6eaef-a126-469e-8c2b-05f39388fcb8
+		sourceColumn: Country Code
+
+	column SKU
+		dataType: string
+		isHidden
+		lineageTag: 0d5522d7-d9d2-4050-831d-77801a3fb67d
+		sourceColumn: SKU
+
+	column 'On Hand Qty'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: afedd387-69a1-4599-b414-b3b040f3dad5
+		summarizeBy: none
+		sourceColumn: On Hand Qty
+
+	column 'On Hand Value EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 1a10f33b-244c-42a8-bee7-f79512ba1509
+		summarizeBy: none
+		sourceColumn: On Hand Value EUR
+
+	column 'Stockout Days'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 663f31ea-4ddd-47a4-b660-f50ed9b8f85c
+		summarizeBy: none
+		sourceColumn: Stockout Days
+
+	column 'Stock Status'
+		dataType: string
+		isHidden
+		lineageTag: bcdb9ce1-f321-4601-8833-bc5a0fe2dc2f
+		sourceColumn: Stock Status
+
+	partition Inventory = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fact_inventory.parquet"))
+				in
+				    Source
+

@@ -1,0 +1,46 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["MCP-PBIModeling","DevMode"]
+
+ref table Date
+ref table Country
+ref table Category
+ref table Product
+ref table Customer
+ref table Warehouse
+ref table 'P&L Line'
+ref table Sales
+ref table Budget
+ref table Opex
+ref table Inventory
+ref table 'FX Rates'
+ref table Forecast
+ref table 'Forecast Accuracy'
+ref table 'DQ Checks'
+ref table 'DQ Exceptions'
+ref table 'DQ Load Log'
+ref table _Measures
+ref table 'Bridge Step'
+ref table 'Scenario Price Change'
+ref table 'Scenario Volume Change'
+ref table 'Scenario Cost Inflation'
+ref table 'Forecast Interval'
+ref table 'Time Intelligence'
+ref table 'Metric Selector'
+ref table 'Breakdown Selector'
+
+ref role 'Country Manager'
+ref role 'Group Management'
+
+ref cultureInfo en-US
+

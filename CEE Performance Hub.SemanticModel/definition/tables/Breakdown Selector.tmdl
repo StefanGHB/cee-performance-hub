@@ -1,0 +1,47 @@
+table 'Breakdown Selector'
+	lineageTag: 47737837-c549-4a45-ae03-201b13a049ff
+
+	column 'Breakdown Selector Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8d20707d-973d-4987-8445-9d82fd66851f
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+	column 'Breakdown Selector Fields'
+		dataType: string
+		isHidden
+		lineageTag: f735fb14-98e5-40ec-a9aa-78b7073ad891
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Breakdown Selector Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+	column 'Breakdown Selector'
+		dataType: string
+		lineageTag: 84eeaa7e-22a5-4053-84f7-bb7338ba0d75
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Breakdown Selector Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Breakdown Selector Fields'
+
+	partition 'Breakdown Selector' = calculated
+		mode: import
+		source =
+				{
+				    ("Country", NAMEOF('Country'[Country]), 0),
+				    ("Category", NAMEOF('Category'[Category]), 1),
+				    ("Channel", NAMEOF('Customer'[Channel]), 2),
+				    ("Brand", NAMEOF('Product'[Brand]), 3),
+				    ("Warehouse", NAMEOF('Warehouse'[Warehouse]), 4),
+				    ("Sales Rep", NAMEOF('Customer'[Sales Rep]), 5)
+				}
+

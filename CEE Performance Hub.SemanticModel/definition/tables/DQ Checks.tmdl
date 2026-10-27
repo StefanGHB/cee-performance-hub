@@ -1,0 +1,84 @@
+/// Data-quality rule results per ETL run.
+table 'DQ Checks'
+	lineageTag: 192452a2-38b6-4bd3-afcb-b73026faef4d
+
+	column 'Check ID'
+		dataType: string
+		lineageTag: e3072476-593e-4b5b-81ab-deab6909bfee
+		sourceColumn: Check ID
+
+	column Check
+		dataType: string
+		lineageTag: 05cb83c4-ebfd-4417-9cd5-c5091221544e
+		sourceColumn: Check
+
+	column 'DQ Dimension'
+		dataType: string
+		lineageTag: 15bbb079-e533-4b59-af95-b3deab9e1ccc
+		sourceColumn: DQ Dimension
+
+	column Source
+		dataType: string
+		lineageTag: 1d2afccf-e9a1-466f-bcd9-c423e0c6725a
+		sourceColumn: Source
+
+	column 'Business Rule'
+		dataType: string
+		lineageTag: 7d059dd6-92d6-4a7d-a456-542169e2d1d3
+		sourceColumn: Business Rule
+
+	column 'Rows Checked'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 4037f77b-3e6c-4e29-943e-7d3540822956
+		summarizeBy: none
+		sourceColumn: Rows Checked
+
+	column 'Rows Failed'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 27b74256-2f40-4132-b852-bfc2aeef5d97
+		summarizeBy: none
+		sourceColumn: Rows Failed
+
+	column 'Fail Rate'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: e03ab0aa-6f12-47c0-92fd-5923dd94953e
+		summarizeBy: none
+		sourceColumn: Fail Rate
+
+	column Tolerance
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 5eab98d8-13ce-47f1-a823-f42f3caaf435
+		summarizeBy: none
+		sourceColumn: Tolerance
+
+	column Status
+		dataType: string
+		lineageTag: b325b7b5-1ab4-432d-8c3e-83adee5823a4
+		sourceColumn: Status
+		sortByColumn: 'Status Sort'
+
+	column 'Status Sort'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 67690b7a-3496-465e-a992-fda7b905c74a
+		summarizeBy: none
+		sourceColumn: Status Sort
+
+	column 'Action Taken'
+		dataType: string
+		lineageTag: 753eadae-d5e7-4364-8801-b98daef9cd39
+		sourceColumn: Action Taken
+
+	partition 'DQ Checks' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dq_results.parquet"))
+				in
+				    Source
+

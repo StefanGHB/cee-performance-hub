@@ -1,0 +1,44 @@
+/// Operating countries with country manager (used for dynamic row-level security).
+table Country
+	lineageTag: dc190a7a-0186-41d6-bbf6-ce11714c9fb5
+
+	column 'Country Code'
+		dataType: string
+		lineageTag: ec902418-411c-43ee-acf4-5a59dc4d7c3e
+		sourceColumn: Country Code
+
+	column Country
+		dataType: string
+		lineageTag: d0449051-1aac-4f83-81f8-d09428473e28
+		dataCategory: Country
+		sourceColumn: Country
+
+	column Region
+		dataType: string
+		lineageTag: f08596aa-4ae2-4285-a8ec-cb46488c5503
+		sourceColumn: Region
+
+	column Currency
+		dataType: string
+		lineageTag: 33a67f10-94e4-4cff-b9a2-cba098026448
+		sourceColumn: Currency
+
+	column 'Country Manager'
+		dataType: string
+		lineageTag: 397acaa9-deca-4836-b5dd-0ec61435b2c6
+		sourceColumn: Country Manager
+
+	column 'Manager Email'
+		dataType: string
+		isHidden
+		lineageTag: aac6af1b-fbe4-48d7-8990-1b0a20fdbab1
+		sourceColumn: Manager Email
+
+	partition Country = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_country.parquet"))
+				in
+				    Source
+

@@ -1,0 +1,49 @@
+/// Source feed load timeliness vs 3-day SLA.
+table 'DQ Load Log'
+	lineageTag: 570bfdf6-5ff8-4c15-b504-33d3a16cc055
+
+	column Period
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: f2dede79-ad7f-4ca1-ab06-e00e2f551111
+		sourceColumn: Period
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: 0dd4652c-181a-41d7-ab75-c91d06a0d70b
+		sourceColumn: Country Code
+
+	column 'Loaded On'
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: 5aeacca8-73dc-4024-87f2-71e53796750c
+		sourceColumn: Loaded On
+
+	column 'Lag Days'
+		dataType: int64
+		formatString: #,0
+		lineageTag: bb021787-deab-411f-bf26-07a8cefa0e52
+		summarizeBy: none
+		sourceColumn: Lag Days
+
+	column 'SLA Days'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 2171c0c9-8342-4782-bb40-3265280d11de
+		summarizeBy: none
+		sourceColumn: SLA Days
+
+	column 'SLA Status'
+		dataType: string
+		lineageTag: 0920beb4-9a6c-4037-9632-c3cb3f9ceb17
+		sourceColumn: SLA Status
+
+	partition 'DQ Load Log' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dq_load_log.parquet"))
+				in
+				    Source
+

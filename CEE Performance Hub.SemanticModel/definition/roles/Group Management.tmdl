@@ -1,0 +1,6 @@
+/// Full access to all countries (executive / regional management).
+role 'Group Management'
+	modelPermission: read
+
+	annotation PBI_Id = 711935265c13445c8c571eb0960c8dbf
+

@@ -1,0 +1,53 @@
+table 'Time Intelligence'
+	lineageTag: 876971b5-aee2-4f7e-8262-a17b0d5265a5
+
+	/// Reusable time calculations applicable to any measure (like-for-like: prior-year comparisons only use months that are closed in the current year).
+	calculationGroup
+		precedence: 10
+
+		/// The measure as is.
+		calculationItem Current = SELECTEDMEASURE()
+
+		/// Same period last year.
+		calculationItem PY = CALCULATE(SELECTEDMEASURE(), CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+
+		/// Absolute change vs prior year.
+		calculationItem YoY =
+				VAR _cur = SELECTEDMEASURE()
+				VAR _py = CALCULATE(SELECTEDMEASURE(), CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+				RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_py), _cur - _py)
+
+		/// Relative change vs prior year.
+		calculationItem 'YoY %' =
+				VAR _cur = SELECTEDMEASURE()
+				VAR _py = CALCULATE(SELECTEDMEASURE(), CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))
+				RETURN IF(NOT ISBLANK(_cur) && NOT ISBLANK(_py), DIVIDE(_cur - _py, ABS(_py)))
+
+			formatStringDefinition = "+0.0%;-0.0%;0.0%"
+
+		/// Year to date.
+		calculationItem YTD = CALCULATE(SELECTEDMEASURE(), DATESYTD('Date'[Date]))
+
+		/// Prior-year year to date (same months).
+		calculationItem 'PY YTD' = CALCULATE(SELECTEDMEASURE(), CALCULATETABLE(SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])), 'Date'[Is Actual Period] = TRUE()))
+
+		/// Year-to-date change vs prior year.
+		calculationItem 'YTD YoY %' =
+				VAR _ytd = CALCULATE(SELECTEDMEASURE(), DATESYTD('Date'[Date]))
+				VAR _pytd = CALCULATE(SELECTEDMEASURE(), CALCULATETABLE(SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])), 'Date'[Is Actual Period] = TRUE()))
+				RETURN IF(NOT ISBLANK(_ytd) && NOT ISBLANK(_pytd), DIVIDE(_ytd - _pytd, ABS(_pytd)))
+
+			formatStringDefinition = "+0.0%;-0.0%;0.0%"
+
+		/// Rolling 12 months ending at the last closed date in context.
+		calculationItem 'Rolling 12M' =
+				VAR _last = CALCULATE(MAX('Date'[Date]), 'Date'[Is Actual Period] = TRUE(), REMOVEFILTERS('Date'))
+				VAR _end = MIN(MAX('Date'[Date]), _last)
+				RETURN CALCULATE(SELECTEDMEASURE(), DATESINPERIOD('Date'[Date], _end, -12, MONTH))
+
+	column 'Time Calculation'
+		dataType: string
+		lineageTag: ce87cfc9-79fa-44f5-aa1a-55aacca9c141
+
+	partition 'Partition_Time Intelligence' = calculationGroup
+

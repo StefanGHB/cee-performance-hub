@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "CEE Performance Hub"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "94d62992-51cf-4853-951b-85ecc218a1c6"
+  }
+}

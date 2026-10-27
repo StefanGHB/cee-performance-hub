@@ -1,0 +1,55 @@
+/// FP&A sales & gross-margin budget. Grain: month x country x category.
+table Budget
+	lineageTag: 26a323b0-15ac-45ef-a5eb-308036b77356
+
+	column Month
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: 2c636263-31ee-46d0-80f8-526d742434dc
+		sourceColumn: Month
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: 2a3fb405-6f57-4e36-83b7-7aa74e70f4a1
+		sourceColumn: Country Code
+
+	column 'Category ID'
+		dataType: string
+		isHidden
+		lineageTag: 26dd909a-9a4f-4372-84b5-cd2be4457557
+		sourceColumn: Category ID
+
+	column 'Budget Net Sales EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: a679ddaa-3629-4a7d-9801-5d62c312f7ee
+		summarizeBy: none
+		sourceColumn: Budget Net Sales EUR
+
+	column 'Budget Gross Margin EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: a496b0ae-a594-4131-b379-8020fae0d405
+		summarizeBy: none
+		sourceColumn: Budget Gross Margin EUR
+
+	column 'Budget COGS EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: c153099e-c516-4558-9778-34971eaea2fe
+		summarizeBy: none
+		sourceColumn: Budget COGS EUR
+
+	partition Budget = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fact_budget.parquet"))
+				in
+				    Source
+

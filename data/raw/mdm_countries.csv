@@ -1,0 +1,9 @@
+country_code,country,region,currency,country_manager,manager_email
+PL,Poland,Central Europe,PLN,Agnieszka Wojcik,manager.pl@danubia-demo.com
+RO,Romania,South-Eastern Europe,RON,Cristina Marin,manager.ro@danubia-demo.com
+CZ,Czechia,Central Europe,CZK,Martin Prochazka,manager.cz@danubia-demo.com
+HU,Hungary,Central Europe,HUF,Laszlo Varga,manager.hu@danubia-demo.com
+GR,Greece,South-Eastern Europe,EUR,Yannis Alexiou,manager.gr@danubia-demo.com
+BG,Bulgaria,South-Eastern Europe,BGN,Stefan Iliev,manager.bg@danubia-demo.com
+RS,Serbia,South-Eastern Europe,RSD,Milos Stojanovic,manager.rs@danubia-demo.com
+HR,Croatia,South-Eastern Europe,EUR,Petra Juric,manager.hr@danubia-demo.com

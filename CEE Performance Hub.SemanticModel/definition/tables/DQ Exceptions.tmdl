@@ -1,0 +1,42 @@
+/// Row-level data-quality exceptions.
+table 'DQ Exceptions'
+	lineageTag: 04f3c459-53a8-4e2b-94fa-52efbaef4290
+
+	column 'Check ID'
+		dataType: string
+		lineageTag: 8f05f0f8-d50e-4d34-bbaf-37cd164fe484
+		sourceColumn: Check ID
+
+	column Check
+		dataType: string
+		lineageTag: 9cb21a83-b9e1-4e99-9421-fa7c4c0869cd
+		sourceColumn: Check
+
+	column Source
+		dataType: string
+		lineageTag: 99c1def8-198d-4e6b-8d16-56ec5a084521
+		sourceColumn: Source
+
+	column Record
+		dataType: string
+		lineageTag: 7837d88f-649d-4e6d-a4ed-69121108d4ad
+		sourceColumn: Record
+
+	column Issue
+		dataType: string
+		lineageTag: 0d95550f-ef28-4690-baa4-d7cc7c18cebe
+		sourceColumn: Issue
+
+	column 'Observed Value'
+		dataType: string
+		lineageTag: 5bc3e8ab-6729-470f-bc5d-d53ff88cd3ce
+		sourceColumn: Observed Value
+
+	partition 'DQ Exceptions' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dq_exception_log.parquet"))
+				in
+				    Source
+

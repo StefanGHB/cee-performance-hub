@@ -1,0 +1,46 @@
+/// Management P&L structure used by the P&L matrix.
+table 'P&L Line'
+	lineageTag: 283a5b1a-3f80-4e1f-8871-ed305c7abe6a
+
+	column 'P&L Key'
+		dataType: string
+		isHidden
+		lineageTag: 626dda0d-114a-4a1c-a1f6-0bf230a765ca
+		sourceColumn: P&L Key
+
+	column 'P&L Line'
+		dataType: string
+		lineageTag: 37085bf0-78ad-460f-9f86-f5aecc27d466
+		sourceColumn: P&L Line
+		sortByColumn: 'P&L Sort'
+
+	column 'P&L Sort'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 9a043305-78b6-44bc-8452-3d89aba61ce8
+		summarizeBy: none
+		sourceColumn: P&L Sort
+
+	column 'Line Type'
+		dataType: string
+		isHidden
+		lineageTag: d8ae4b84-0cd3-4ad4-b94e-fc7576731d9e
+		sourceColumn: Line Type
+
+	column 'Is Ratio'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 22a9e614-6d26-4db7-bf15-e437e5ca7c9c
+		summarizeBy: none
+		sourceColumn: Is Ratio
+
+	partition 'P&L Line' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_pnl_line.parquet"))
+				in
+				    Source
+

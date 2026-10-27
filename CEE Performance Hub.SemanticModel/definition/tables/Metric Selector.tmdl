@@ -1,0 +1,48 @@
+table 'Metric Selector'
+	lineageTag: 2364c877-dfd6-4c56-a782-a2165da0ec43
+
+	column 'Metric Selector Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 86edd077-cf6a-41ac-b3bc-c80575e79583
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+	column 'Metric Selector Fields'
+		dataType: string
+		isHidden
+		lineageTag: b6003c00-8dfe-4a3f-a5e2-ce2ad6db4314
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Metric Selector Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+	column 'Metric Selector'
+		dataType: string
+		lineageTag: 20e88fce-8aee-4f52-b077-4bffb15b9825
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Metric Selector Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Metric Selector Fields'
+
+	partition 'Metric Selector' = calculated
+		mode: import
+		source =
+				{
+				    ("Net Sales", NAMEOF('_Measures'[Net Sales]), 0),
+				    ("Gross Margin", NAMEOF('_Measures'[Gross Margin]), 1),
+				    ("Gross Margin %", NAMEOF('_Measures'[Gross Margin %]), 2),
+				    ("Units", NAMEOF('_Measures'[Units]), 3),
+				    ("Orders", NAMEOF('_Measures'[Orders]), 4),
+				    ("Active Customers", NAMEOF('_Measures'[Active Customers]), 5),
+				    ("OTIF %", NAMEOF('_Measures'[OTIF %]), 6)
+				}
+

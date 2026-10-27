@@ -1,0 +1,153 @@
+{
+  "name": "CEE Performance Hub",
+  "dataColors": [
+    "#1F4E79",
+    "#2A9D8F",
+    "#E9A23B",
+    "#D1495B",
+    "#6FA8DC",
+    "#6A4C93",
+    "#8492A6",
+    "#C9B79C",
+    "#3D9970",
+    "#F28E2B"
+  ],
+  "foreground": "#1F2937",
+  "foregroundNeutralSecondary": "#6B7685",
+  "foregroundNeutralTertiary": "#98A2B3",
+  "background": "#FFFFFF",
+  "backgroundLight": "#F3F5F9",
+  "backgroundNeutral": "#E4E8EE",
+  "tableAccent": "#1F4E79",
+  "good": "#1A7F5A",
+  "neutral": "#D98E04",
+  "bad": "#C23B3B",
+  "maximum": "#1F4E79",
+  "center": "#9FC5E8",
+  "minimum": "#F3F5F9",
+  "textClasses": {
+    "callout": {
+      "fontSize": 26,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#0F1E36"
+    },
+    "title": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#1F2937"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#1F2937"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#6B7685"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "title": [
+          {
+            "show": true,
+            "fontSize": 12,
+            "fontColor": {
+              "solid": {
+                "color": "#1F2937"
+              }
+            },
+            "bold": true
+          }
+        ],
+        "subTitle": [
+          {
+            "show": true,
+            "fontSize": 9,
+            "fontColor": {
+              "solid": {
+                "color": "#6B7685"
+              }
+            }
+          }
+        ],
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#E1E6ED"
+              }
+            },
+            "radius": 10,
+            "width": 1
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": true,
+            "preset": "Custom",
+            "position": "Outer",
+            "color": {
+              "solid": {
+                "color": "#0F1E36"
+              }
+            },
+            "transparency": 93,
+            "shadowBlur": 12,
+            "shadowDistance": 2,
+            "shadowSpread": 0,
+            "angle": 90
+          }
+        ],
+        "padding": [
+          {
+            "top": 12,
+            "bottom": 12,
+            "left": 14,
+            "right": 14
+          }
+        ],
+        "valueAxis": [
+          {
+            "gridlineColor": {
+              "solid": {
+                "color": "#EEF1F5"
+              }
+            }
+          }
+        ],
+        "categoryAxis": [
+          {
+            "gridlineShow": false
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#F3F5F9"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "outspace": [
+          {
+            "color": {
+              "solid": {
+                "color": "#E4E8EE"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

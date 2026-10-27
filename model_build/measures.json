@@ -1,0 +1,1101 @@
+[
+{
+"name": "Net Sales",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "SUM(Sales[Net Sales EUR])",
+"description": "Invoiced net sales in EUR (gross sales less discounts & promotions), converted at monthly average FX.",
+"formatString": "€#,0"
+},
+{
+"name": "Gross Sales",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "SUM(Sales[Gross Sales EUR])",
+"description": "Delivered quantity x list price, EUR.",
+"formatString": "€#,0"
+},
+{
+"name": "Discounts",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "SUM(Sales[Discount EUR])",
+"description": "Trade discounts and promotional allowances, EUR.",
+"formatString": "€#,0"
+},
+{
+"name": "Discount %",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DIVIDE([Discounts], [Gross Sales])",
+"description": "Discounts as % of gross sales.",
+"formatString": "0.0%"
+},
+{
+"name": "Units",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "SUM(Sales[Qty Delivered])",
+"description": "Delivered units (cases).",
+"formatString": "#,0"
+},
+{
+"name": "Orders",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DISTINCTCOUNT(Sales[Order ID])",
+"description": "Number of distinct sales orders.",
+"formatString": "#,0"
+},
+{
+"name": "Order Lines",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "COUNTROWS(Sales)",
+"description": "Number of order lines.",
+"formatString": "#,0"
+},
+{
+"name": "Avg Order Value",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DIVIDE([Net Sales], [Orders])",
+"description": "Net sales per order.",
+"formatString": "€#,0"
+},
+{
+"name": "Avg Net Price per Unit",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DIVIDE([Net Sales], [Units])",
+"description": "Net sales per delivered unit.",
+"formatString": "€#,0.00"
+},
+{
+"name": "Promo Sales %",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DIVIDE(CALCULATE([Net Sales], Sales[Is Promo] = 1), [Net Sales])",
+"description": "Share of net sales sold on promotion.",
+"formatString": "0.0%"
+},
+{
+"name": "Active Customers",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DISTINCTCOUNT(Sales[Customer Code])",
+"description": "Customers with at least one invoice in the period.",
+"formatString": "#,0"
+},
+{
+"name": "Net Sales per Customer",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DIVIDE([Net Sales], [Active Customers])",
+"description": "Average net sales per active customer.",
+"formatString": "€#,0"
+},
+{
+"name": "New Customers",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "VAR _start = MIN('Date'[Date])\nVAR _end = MAX('Date'[Date])\nRETURN\n    IF(\n        NOT ISBLANK([Net Sales]),\n        COUNTROWS(\n            FILTER(\n                VALUES(Sales[Customer Code]),\n                VAR _since = LOOKUPVALUE(Customer[Customer Since], Customer[Customer Code], Sales[Customer Code])\n                RETURN _since >= _start && _since <= _end\n            )\n        ) + 0\n    )",
+"description": "Customers acquired (CRM 'customer since' date) in the period that already placed an order.",
+"formatString": "#,0"
+},
+{
+"name": "Churned Customers",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "VAR _start = MIN('Date'[Date])\nVAR _end = MAX('Date'[Date])\nVAR _customers = CALCULATETABLE(VALUES(Sales[Customer Code]), REMOVEFILTERS('Date'))\nRETURN\n    IF(\n        _start <= [Last Actual Date],\n        COUNTROWS(\n            FILTER(\n                _customers,\n                VAR _churn = LOOKUPVALUE(Customer[Churn Date], Customer[Customer Code], Sales[Customer Code])\n                RETURN NOT ISBLANK(_churn) && _churn >= _start && _churn <= _end\n            )\n        ) + 0\n    )",
+"description": "Customers whose CRM churn date falls in the period.",
+"formatString": "#,0"
+},
+{
+"name": "Unfulfilled Demand",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "SUM(Sales[Unfulfilled Net EUR])",
+"description": "Net value of ordered quantity that was not delivered (short shipments) - lost sales opportunity.",
+"formatString": "€#,0"
+},
+{
+"name": "Unfulfilled Demand %",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "DIVIDE([Unfulfilled Demand], [Net Sales] + [Unfulfilled Demand])",
+"description": "Unfulfilled demand as % of total demand.",
+"formatString": "0.0%"
+},
+{
+"name": "Net Sales LCY",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "IF(\n    DISTINCTCOUNT(Sales[Functional Currency]) = 1,\n    SUM(Sales[Net Sales LCY])\n)",
+"description": "Net sales in the country's functional currency. Blank when several currencies are mixed. BGN history restated to EUR at 1.95583.",
+"formatString": "#,0"
+},
+{
+"name": "Customer Rank",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "IF(\n    HASONEVALUE(Customer[Customer]) && NOT ISBLANK([Net Sales]),\n    RANKX(ALLSELECTED(Customer[Customer]), [Net Sales], , DESC, Dense)\n)",
+"description": "Rank of the customer by net sales within the current selection.",
+"formatString": "#,0"
+},
+{
+"name": "Cumulative Customer Share %",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "VAR _total = CALCULATE([Net Sales], ALLSELECTED(Customer))\nVAR _current = [Net Sales]\nVAR _tbl =\n    FILTER(\n        ADDCOLUMNS(ALLSELECTED(Customer[Customer]), \"@ns\", [Net Sales]),\n        NOT ISBLANK([@ns])\n    )\nVAR _cum = SUMX(FILTER(_tbl, [@ns] >= _current), [@ns])\nRETURN IF(NOT ISBLANK(_current), DIVIDE(_cum, _total))",
+"description": "Pareto: cumulative share of net sales of customers ranked at or above the current customer.",
+"formatString": "0.0%"
+},
+{
+"name": "Top 20% Customers Share",
+"tableName": "_Measures",
+"displayFolder": "01 Sales",
+"expression": "VAR _tbl =\n    FILTER(ADDCOLUMNS(VALUES(Sales[Customer Code]), \"@ns\", [Net Sales]), [@ns] > 0)\nVAR _n = COUNTROWS(_tbl)\nVAR _top = TOPN(ROUNDUP(_n * 0.2, 0), _tbl, [@ns], DESC)\nRETURN DIVIDE(SUMX(_top, [@ns]), SUMX(_tbl, [@ns]))",
+"description": "Share of net sales generated by the top 20% of customers (concentration risk).",
+"formatString": "0.0%"
+},
+{
+"name": "COGS",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "SUM(Sales[COGS EUR])",
+"description": "Cost of goods sold at standard cost, EUR.",
+"formatString": "€#,0"
+},
+{
+"name": "Gross Margin",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "[Net Sales] - [COGS]",
+"description": "Net sales less COGS.",
+"formatString": "€#,0"
+},
+{
+"name": "Gross Margin %",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "DIVIDE([Gross Margin], [Net Sales])",
+"description": "Gross margin as % of net sales.",
+"formatString": "0.0%"
+},
+{
+"name": "Opex",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "IF(\n    NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)),\n    SUM(Opex[Actual EUR])\n)",
+"description": "Operating expenses (GL actuals). Not allocated to products, customers or warehouses - blank at those levels.",
+"formatString": "€#,0"
+},
+{
+"name": "Opex % of Sales",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "DIVIDE([Opex], [Net Sales])",
+"description": "Operating expenses as % of net sales.",
+"formatString": "0.0%"
+},
+{
+"name": "Logistics Cost % of Sales",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "DIVIDE(CALCULATE([Opex], 'P&L Line'[P&L Key] = \"6100\"), [Net Sales])",
+"description": "Logistics & transport cost as % of net sales.",
+"formatString": "0.0%"
+},
+{
+"name": "EBITDA",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "IF(NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), [Gross Margin] - [Opex])",
+"description": "Gross margin less operating expenses. Available at company / country / period level.",
+"formatString": "€#,0"
+},
+{
+"name": "EBITDA %",
+"tableName": "_Measures",
+"displayFolder": "02 Profitability",
+"expression": "DIVIDE([EBITDA], [Net Sales])",
+"description": "EBITDA margin.",
+"formatString": "0.0%"
+},
+{
+"name": "Budget Net Sales",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "IF(NOT (ISFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), SUM(Budget[Budget Net Sales EUR]))",
+"description": "FP&A budget net sales (set at month x country x category).",
+"formatString": "€#,0"
+},
+{
+"name": "Budget Gross Margin",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "IF(NOT (ISFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), SUM(Budget[Budget Gross Margin EUR]))",
+"description": "FP&A budget gross margin.",
+"formatString": "€#,0"
+},
+{
+"name": "Budget COGS",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "[Budget Net Sales] - [Budget Gross Margin]",
+"description": "Budget cost of goods sold.",
+"formatString": "€#,0"
+},
+{
+"name": "Budget Gross Margin %",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "DIVIDE([Budget Gross Margin], [Budget Net Sales])",
+"description": "Budget gross margin %.",
+"formatString": "0.0%"
+},
+{
+"name": "Budget Opex",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "IF(NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)), SUM(Opex[Budget EUR]))",
+"description": "Budget operating expenses.",
+"formatString": "€#,0"
+},
+{
+"name": "Budget EBITDA",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "[Budget Gross Margin] - [Budget Opex]",
+"description": "Budget EBITDA.",
+"formatString": "€#,0"
+},
+{
+"name": "Budget EBITDA %",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "DIVIDE([Budget EBITDA], [Budget Net Sales])",
+"description": "Budget EBITDA margin.",
+"formatString": "0.0%"
+},
+{
+"name": "Budget Net Sales (Closed Periods)",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "CALCULATE([Budget Net Sales], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))",
+"description": "Budget for the months that already have actuals - the like-for-like comparison base.",
+"formatString": "€#,0"
+},
+{
+"name": "Budget Gross Margin (Closed Periods)",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "CALCULATE([Budget Gross Margin], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))",
+"description": "Budget gross margin for closed months.",
+"formatString": "€#,0"
+},
+{
+"name": "Budget EBITDA (Closed Periods)",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "CALCULATE([Budget EBITDA], KEEPFILTERS('Date'[Is Actual Period] = TRUE()))",
+"description": "Budget EBITDA for closed months.",
+"formatString": "€#,0"
+},
+{
+"name": "Net Sales vs Budget",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "IF(NOT ISBLANK([Net Sales]) && NOT ISBLANK([Budget Net Sales (Closed Periods)]), [Net Sales] - [Budget Net Sales (Closed Periods)])",
+"description": "Actual net sales minus budget (closed months only).",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Net Sales vs Budget %",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "DIVIDE([Net Sales vs Budget], [Budget Net Sales (Closed Periods)])",
+"description": "Net sales variance to budget, %.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Budget Achievement %",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "DIVIDE([Net Sales], [Budget Net Sales (Closed Periods)])",
+"description": "Actual net sales as % of budget (closed months).",
+"formatString": "0.0%"
+},
+{
+"name": "Gross Margin vs Budget",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "IF(NOT ISBLANK([Gross Margin]) && NOT ISBLANK([Budget Gross Margin (Closed Periods)]), [Gross Margin] - [Budget Gross Margin (Closed Periods)])",
+"description": "Gross margin variance to budget (closed months).",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Gross Margin % vs Budget (pp)",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "VAR _b = DIVIDE([Budget Gross Margin (Closed Periods)], [Budget Net Sales (Closed Periods)])\nRETURN IF(NOT ISBLANK([Gross Margin %]) && NOT ISBLANK(_b), ([Gross Margin %] - _b) * 100)",
+"description": "Gross margin % difference to budget in percentage points.",
+"formatString": "+0.0 \"pp\";-0.0 \"pp\";0.0 \"pp\""
+},
+{
+"name": "EBITDA vs Budget",
+"tableName": "_Measures",
+"displayFolder": "03 Budget",
+"expression": "IF(NOT ISBLANK([EBITDA]) && NOT ISBLANK([Budget EBITDA (Closed Periods)]), [EBITDA] - [Budget EBITDA (Closed Periods)])",
+"description": "EBITDA variance to budget (closed months).",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "OTIF %",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "AVERAGE(Sales[OTIF])",
+"description": "Order lines delivered on time AND in full (lines with an invalid delivery date excluded).",
+"formatString": "0.0%"
+},
+{
+"name": "On-Time %",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "AVERAGE(Sales[On Time])",
+"description": "Order lines delivered on or before the promised date.",
+"formatString": "0.0%"
+},
+{
+"name": "In-Full %",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "AVERAGE(Sales[In Full])",
+"description": "Order lines delivered with the full ordered quantity.",
+"formatString": "0.0%"
+},
+{
+"name": "Fill Rate %",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "DIVIDE(SUM(Sales[Qty Delivered]), SUM(Sales[Qty Ordered]))",
+"description": "Delivered units / ordered units.",
+"formatString": "0.0%"
+},
+{
+"name": "OTIF Target",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "0.95",
+"description": "Service-level target for OTIF.",
+"formatString": "0.0%"
+},
+{
+"name": "OTIF vs Target (pp)",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "IF(NOT ISBLANK([OTIF %]), ([OTIF %] - [OTIF Target]) * 100)",
+"description": "OTIF gap to target, percentage points.",
+"formatString": "+0.0 \"pp\";-0.0 \"pp\";0.0 \"pp\""
+},
+{
+"name": "Avg Lead Time (days)",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "AVERAGE(Sales[Lead Time Days])",
+"description": "Average days from order to delivery.",
+"formatString": "#,0.0"
+},
+{
+"name": "Late Lines",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "CALCULATE(COUNTROWS(Sales), Sales[On Time] = 0)",
+"description": "Order lines delivered after the promised date.",
+"formatString": "#,0"
+},
+{
+"name": "Inventory Value",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))\nRETURN CALCULATE(SUM(Inventory[On Hand Value EUR]), 'Date'[Date] = _lastSnapshot)",
+"description": "Closing inventory value at standard cost (semi-additive: last month-end in the period).",
+"formatString": "€#,0"
+},
+{
+"name": "Inventory Units",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))\nRETURN CALCULATE(SUM(Inventory[On Hand Qty]), 'Date'[Date] = _lastSnapshot)",
+"description": "Closing inventory units (last month-end in the period).",
+"formatString": "#,0"
+},
+{
+"name": "Days of Inventory",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))\nVAR _period = DATESINPERIOD('Date'[Date], _lastSnapshot, -3, MONTH)\nVAR _cogs = CALCULATE([COGS], _period)\nVAR _days = COUNTROWS(_period)\nRETURN DIVIDE([Inventory Value], DIVIDE(_cogs, _days))",
+"description": "Closing inventory / average daily COGS of the trailing 3 months.",
+"formatString": "#,0.0"
+},
+{
+"name": "Stockout Days",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "SUM(Inventory[Stockout Days])",
+"description": "SKU x warehouse days out of stock.",
+"formatString": "#,0"
+},
+{
+"name": "Stockout Days per SKU",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "DIVIDE([Stockout Days], COUNTROWS(Inventory))",
+"description": "Average stock-out days per SKU-warehouse-month.",
+"formatString": "#,0.0"
+},
+{
+"name": "Aged Stock Value",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "VAR _lastSnapshot = CALCULATE(MAX(Inventory[Snapshot Date]), ALL(Inventory), VALUES('Date'[Date]))\nRETURN CALCULATE(SUM(Inventory[On Hand Value EUR]), 'Date'[Date] = _lastSnapshot, Inventory[Stock Status] = \"Discontinued (aged)\")",
+"description": "Closing value of stock of discontinued SKUs (obsolescence risk).",
+"formatString": "€#,0"
+},
+{
+"name": "Aged Stock %",
+"tableName": "_Measures",
+"displayFolder": "06 Operations",
+"expression": "DIVIDE([Aged Stock Value], [Inventory Value])",
+"description": "Aged stock as % of inventory value.",
+"formatString": "0.0%"
+},
+{
+"name": "Last Actual Date",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE(MAX('Date'[Date]), 'Date'[Is Actual Period] = TRUE(), REMOVEFILTERS('Date'))",
+"description": "Reporting cut-off: last day of the last closed month.",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "Net Sales PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Net Sales], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "Net sales in the same period last year (like-for-like: only months that are closed in the current year).",
+"formatString": "€#,0"
+},
+{
+"name": "Net Sales YoY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "IF(NOT ISBLANK([Net Sales]) && NOT ISBLANK([Net Sales PY]), [Net Sales] - [Net Sales PY])",
+"description": "Net sales change vs prior year.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Net Sales YoY %",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "DIVIDE([Net Sales YoY], [Net Sales PY])",
+"description": "Net sales growth vs prior year.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Net Sales YTD",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Net Sales], DATESYTD('Date'[Date]))",
+"description": "Year-to-date net sales.",
+"formatString": "€#,0"
+},
+{
+"name": "Net Sales PY YTD",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Net Sales], CALCULATETABLE(SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])), 'Date'[Is Actual Period] = TRUE()))",
+"description": "Prior-year year-to-date net sales (same months).",
+"formatString": "€#,0"
+},
+{
+"name": "Net Sales YTD YoY %",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "DIVIDE([Net Sales YTD] - [Net Sales PY YTD], [Net Sales PY YTD])",
+"description": "Year-to-date growth vs prior year.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Net Sales R12M",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "VAR _end = MIN(MAX('Date'[Date]), [Last Actual Date])\nRETURN CALCULATE([Net Sales], DATESINPERIOD('Date'[Date], _end, -12, MONTH))",
+"description": "Rolling 12-month net sales ending at the last closed date in context.",
+"formatString": "€#,0"
+},
+{
+"name": "Gross Margin PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Gross Margin], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "Gross margin, same period last year.",
+"formatString": "€#,0"
+},
+{
+"name": "Gross Margin YoY %",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "DIVIDE([Gross Margin] - [Gross Margin PY], [Gross Margin PY])",
+"description": "Gross margin growth vs prior year.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Gross Margin % PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Gross Margin %], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "Gross margin %, same period last year.",
+"formatString": "0.0%"
+},
+{
+"name": "Gross Margin % YoY (pp)",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "IF(NOT ISBLANK([Gross Margin %]) && NOT ISBLANK([Gross Margin % PY]), ([Gross Margin %] - [Gross Margin % PY]) * 100)",
+"description": "Gross margin % change vs prior year, percentage points.",
+"formatString": "+0.0 \"pp\";-0.0 \"pp\";0.0 \"pp\""
+},
+{
+"name": "EBITDA PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([EBITDA], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "EBITDA, same period last year.",
+"formatString": "€#,0"
+},
+{
+"name": "EBITDA YoY %",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "DIVIDE([EBITDA] - [EBITDA PY], ABS([EBITDA PY]))",
+"description": "EBITDA growth vs prior year.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "EBITDA % PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([EBITDA %], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "EBITDA margin, same period last year.",
+"formatString": "0.0%"
+},
+{
+"name": "Units PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Units], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "Units, same period last year.",
+"formatString": "#,0"
+},
+{
+"name": "Active Customers PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([Active Customers], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "Active customers, same period last year.",
+"formatString": "#,0"
+},
+{
+"name": "OTIF % PY",
+"tableName": "_Measures",
+"displayFolder": "04 Time Intelligence",
+"expression": "CALCULATE([OTIF %], CALCULATETABLE(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Is Actual Period] = TRUE()))",
+"description": "OTIF, same period last year.",
+"formatString": "0.0%"
+},
+{
+"name": "Net Sales @ PY FX",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "SUM(Sales[Net Sales EUR @PY FX])",
+"description": "Current-period local-currency sales translated at prior-year FX rates (constant currency).",
+"formatString": "€#,0"
+},
+{
+"name": "FX Impact",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "IF(NOT ISBLANK([Net Sales]), [Net Sales] - [Net Sales @ PY FX])",
+"description": "Translation effect of exchange-rate movements on EUR net sales.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Constant Currency Growth %",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "DIVIDE([Net Sales @ PY FX] - [Net Sales PY], [Net Sales PY])",
+"description": "Net sales growth excluding FX translation effects.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Volume Effect",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "VAR _unitsCY = [Units]\nVAR _unitsPY = [Units PY]\nVAR _avgPricePY = DIVIDE([Net Sales PY], _unitsPY)\nRETURN IF(NOT ISBLANK(_unitsPY) && NOT ISBLANK(_unitsCY), (_unitsCY - _unitsPY) * _avgPricePY)",
+"description": "Change in net sales explained by total volume at prior-year average price.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Price Effect",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "IF(\n    NOT ISBLANK([Net Sales PY]) && NOT ISBLANK([Net Sales]),\n    SUMX(\n        VALUES('Product'[SKU]),\n        VAR _uCY = [Units]\n        VAR _uPY = [Units PY]\n        VAR _pCY = DIVIDE([Net Sales @ PY FX], _uCY)\n        VAR _pPY = DIVIDE([Net Sales PY], _uPY)\n        RETURN IF(_uCY > 0 && _uPY > 0, _uCY * (_pCY - _pPY))\n    )\n)",
+"description": "Net price realisation (list price & discount changes) per SKU at constant FX.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "FX Effect",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "IF(NOT ISBLANK([Net Sales PY]), [FX Impact])",
+"description": "FX translation effect (bridge step).",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Mix & Other Effect",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "IF(\n    NOT ISBLANK([Net Sales PY]) && NOT ISBLANK([Net Sales]),\n    [Net Sales] - [Net Sales PY] - [Volume Effect] - [Price Effect] - [FX Effect]\n)",
+"description": "Residual: product / customer mix, new and discontinued SKUs.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Bridge Value",
+"tableName": "_Measures",
+"displayFolder": "05 FX & Price-Volume-Mix",
+"expression": "SWITCH(\n    SELECTEDVALUE('Bridge Step'[Step]),\n    \"Net Sales PY\", [Net Sales PY],\n    \"Volume\", [Volume Effect],\n    \"Price\", [Price Effect],\n    \"Mix & Other\", [Mix & Other Effect],\n    \"FX\", [FX Effect]\n)",
+"description": "Value of each step of the net sales bridge (use with 'Bridge Step'[Step] in a waterfall).",
+"formatString": "€#,0;-€#,0"
+},
+{
+"name": "Forecast Net Sales",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "CALCULATE(SUM(Forecast[Forecast EUR]), Forecast[Forecast Type] = \"Forward\")",
+"description": "ETS statistical forecast of net sales for open months (Oct 2026 onwards).",
+"formatString": "€#,0"
+},
+{
+"name": "Forecast Lower 80",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _f = [Forecast Net Sales]\nVAR _err = SQRT(SUMX(FILTER(Forecast, Forecast[Forecast Type] = \"Forward\"), (Forecast[Forecast EUR] - Forecast[Lower 80]) ^ 2))\nRETURN IF(NOT ISBLANK(_f), _f - _err)",
+"description": "Lower bound of the 80% prediction interval (series errors combined in quadrature).",
+"formatString": "€#,0"
+},
+{
+"name": "Forecast Upper 80",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _f = [Forecast Net Sales]\nVAR _err = SQRT(SUMX(FILTER(Forecast, Forecast[Forecast Type] = \"Forward\"), (Forecast[Upper 80] - Forecast[Forecast EUR]) ^ 2))\nRETURN IF(NOT ISBLANK(_f), _f + _err)",
+"description": "Upper bound of the 80% prediction interval.",
+"formatString": "€#,0"
+},
+{
+"name": "Forecast Lower 95",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _f = [Forecast Net Sales]\nVAR _err = SQRT(SUMX(FILTER(Forecast, Forecast[Forecast Type] = \"Forward\"), (Forecast[Forecast EUR] - Forecast[Lower 95]) ^ 2))\nRETURN IF(NOT ISBLANK(_f), _f - _err)",
+"description": "Lower bound of the 95% prediction interval.",
+"formatString": "€#,0"
+},
+{
+"name": "Forecast Upper 95",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _f = [Forecast Net Sales]\nVAR _err = SQRT(SUMX(FILTER(Forecast, Forecast[Forecast Type] = \"Forward\"), (Forecast[Upper 95] - Forecast[Forecast EUR]) ^ 2))\nRETURN IF(NOT ISBLANK(_f), _f + _err)",
+"description": "Upper bound of the 95% prediction interval.",
+"formatString": "€#,0"
+},
+{
+"name": "Forecast Line",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _monthEnd = MAX('Date'[Date])\nVAR _lastActual = [Last Actual Date]\nRETURN\n    IF(\n        _monthEnd = _lastActual,\n        [Net Sales],\n        [Forecast Net Sales]\n    )",
+"description": "Forecast series for charts, anchored on the last actual month so the line is continuous.",
+"formatString": "€#,0"
+},
+{
+"name": "Back-test Forecast",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "CALCULATE(SUM(Forecast[Forecast EUR]), Forecast[Forecast Type] = \"Back-test\")",
+"description": "Out-of-sample forecast for Apr-Sep 2026 (model trained on data up to Mar 2026).",
+"formatString": "€#,0"
+},
+{
+"name": "Back-test Actual",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _months = CALCULATETABLE(VALUES(Forecast[Month]), Forecast[Forecast Type] = \"Back-test\")\nRETURN CALCULATE([Net Sales], KEEPFILTERS(TREATAS(_months, 'Date'[Month Start])))",
+"description": "Actual net sales for the back-test months only (Apr-Sep 2026).",
+"formatString": "€#,0"
+},
+{
+"name": "Back-test Error %",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _f = [Back-test Forecast]\nVAR _a = [Back-test Actual]\nRETURN IF(NOT ISBLANK(_f) && NOT ISBLANK(_a), DIVIDE(_f - _a, _a))",
+"description": "Back-test forecast vs actual for the same months, % (positive = over-forecast).",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Forecast WAPE",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "CALCULATE(\n    DIVIDE(SUM('Forecast Accuracy'[Abs Error EUR]), SUM('Forecast Accuracy'[Actual EUR])),\n    'Forecast Accuracy'[Model] = \"ETS (damped trend)\"\n)",
+"description": "Weighted absolute % error of the ETS model on the 6-month hold-out.",
+"formatString": "0.0%"
+},
+{
+"name": "Naive WAPE",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "CALCULATE(\n    DIVIDE(SUM('Forecast Accuracy'[Abs Error EUR]), SUM('Forecast Accuracy'[Actual EUR])),\n    'Forecast Accuracy'[Model] = \"Seasonal naive\"\n)",
+"description": "Weighted absolute % error of the seasonal-naive benchmark (same month last year).",
+"formatString": "0.0%"
+},
+{
+"name": "Forecast Value Added (pp)",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "([Naive WAPE] - [Forecast WAPE]) * 100",
+"description": "Error reduction of the ETS model vs the naive benchmark, percentage points.",
+"formatString": "+0.0 \"pp\";-0.0 \"pp\";0.0 \"pp\""
+},
+{
+"name": "Forecast Accuracy %",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "1 - [Forecast WAPE]",
+"description": "1 - WAPE.",
+"formatString": "0.0%"
+},
+{
+"name": "FY Outlook",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "[Net Sales] + [Forecast Net Sales]",
+"description": "Latest estimate: actuals for closed months + statistical forecast for open months.",
+"formatString": "€#,0"
+},
+{
+"name": "FY Outlook vs Budget",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "IF(NOT ISBLANK([Budget Net Sales]), [FY Outlook] - [Budget Net Sales])",
+"description": "Latest estimate minus full-period budget.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "FY Outlook vs Budget %",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "DIVIDE([FY Outlook vs Budget], [Budget Net Sales])",
+"description": "Latest estimate vs budget, %.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "FY Outlook vs PY %",
+"tableName": "_Measures",
+"displayFolder": "07 Forecast",
+"expression": "VAR _py = CALCULATE([Net Sales], SAMEPERIODLASTYEAR('Date'[Date]))\nRETURN DIVIDE([FY Outlook] - _py, _py)",
+"description": "Latest estimate vs full prior-year actuals.",
+"formatString": "+0.0%;-0.0%;0.0%"
+},
+{
+"name": "Price Change %",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "SELECTEDVALUE('Scenario Price Change'[Price Change %], 0)",
+"description": "Selected what-if price change.",
+"formatString": "+0%;-0%;0%"
+},
+{
+"name": "Volume Change %",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "SELECTEDVALUE('Scenario Volume Change'[Volume Change %], 0)",
+"description": "Selected what-if volume change.",
+"formatString": "+0%;-0%;0%"
+},
+{
+"name": "Cost Inflation %",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "SELECTEDVALUE('Scenario Cost Inflation'[Cost Inflation %], 0)",
+"description": "Selected what-if COGS inflation.",
+"formatString": "+0%;-0%;0%"
+},
+{
+"name": "R12M Gross Margin %",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "VAR _end = [Last Actual Date]\nRETURN CALCULATE([Gross Margin %], DATESINPERIOD('Date'[Date], _end, -12, MONTH), REMOVEFILTERS('Date'))",
+"description": "Gross margin % of the last 12 closed months (basis for open-period margin).",
+"formatString": "0.0%"
+},
+{
+"name": "R12M Opex % of Sales",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "VAR _end = [Last Actual Date]\nRETURN CALCULATE([Opex % of Sales], DATESINPERIOD('Date'[Date], _end, -12, MONTH), REMOVEFILTERS('Date'))",
+"description": "Opex % of sales of the last 12 closed months (basis for open-period opex).",
+"formatString": "0.0%"
+},
+{
+"name": "Outlook Gross Margin (Base)",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "[Gross Margin] + [Forecast Net Sales] * [R12M Gross Margin %]",
+"description": "Actual gross margin + forecast net sales x trailing GM %.",
+"formatString": "€#,0"
+},
+{
+"name": "Outlook EBITDA (Base)",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "IF(\n    NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)),\n    [Outlook Gross Margin (Base)] - [Opex] - [Forecast Net Sales] * [R12M Opex % of Sales]\n)",
+"description": "Latest-estimate EBITDA before scenario adjustments.",
+"formatString": "€#,0"
+},
+{
+"name": "Scenario Net Sales",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "[Net Sales] + [Forecast Net Sales] * (1 + [Price Change %]) * (1 + [Volume Change %])",
+"description": "Latest estimate with what-if price and volume changes applied to open periods.",
+"formatString": "€#,0"
+},
+{
+"name": "Scenario Gross Margin",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "VAR _fc = [Forecast Net Sales]\nVAR _cogsOpen = _fc * (1 - [R12M Gross Margin %]) * (1 + [Volume Change %]) * (1 + [Cost Inflation %])\nVAR _salesOpen = _fc * (1 + [Price Change %]) * (1 + [Volume Change %])\nRETURN [Gross Margin] + _salesOpen - _cogsOpen",
+"description": "Scenario gross margin: price changes flow to margin, volume scales COGS, cost inflation raises COGS.",
+"formatString": "€#,0"
+},
+{
+"name": "Scenario EBITDA",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "IF(\n    NOT (ISCROSSFILTERED('Product') || ISCROSSFILTERED(Customer) || ISCROSSFILTERED(Warehouse)),\n    VAR _opexOpen = [Forecast Net Sales] * [R12M Opex % of Sales] * (1 + 0.6 * [Volume Change %])\n    RETURN [Scenario Gross Margin] - [Opex] - _opexOpen\n)",
+"description": "Scenario EBITDA. Assumes 60% of opex is variable with volume.",
+"formatString": "€#,0"
+},
+{
+"name": "Scenario EBITDA %",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "DIVIDE([Scenario EBITDA], [Scenario Net Sales])",
+"description": "Scenario EBITDA margin.",
+"formatString": "0.0%"
+},
+{
+"name": "Scenario Net Sales Impact",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "[Scenario Net Sales] - [FY Outlook]",
+"description": "Scenario minus base latest estimate.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "Scenario EBITDA Impact",
+"tableName": "_Measures",
+"displayFolder": "08 Scenario",
+"expression": "[Scenario EBITDA] - [Outlook EBITDA (Base)]",
+"description": "Scenario EBITDA minus base.",
+"formatString": "+€#,0;-€#,0;€0"
+},
+{
+"name": "DQ Checks",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "COUNTROWS('DQ Checks')",
+"description": "Number of data-quality rules executed.",
+"formatString": "#,0"
+},
+{
+"name": "DQ Checks Passed",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "CALCULATE(COUNTROWS('DQ Checks'), 'DQ Checks'[Status] = \"Pass\") + 0",
+"description": "Rules within tolerance.",
+"formatString": "#,0"
+},
+{
+"name": "DQ Checks Warning",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "CALCULATE(COUNTROWS('DQ Checks'), 'DQ Checks'[Status] = \"Warning\") + 0",
+"description": "Rules above tolerance (up to 5x).",
+"formatString": "#,0"
+},
+{
+"name": "DQ Checks Failed",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "CALCULATE(COUNTROWS('DQ Checks'), 'DQ Checks'[Status] = \"Fail\") + 0",
+"description": "Rules above 5x tolerance.",
+"formatString": "#,0"
+},
+{
+"name": "DQ Rule Pass Rate",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "DIVIDE([DQ Checks Passed], [DQ Checks])",
+"description": "Share of rules passing.",
+"formatString": "0.0%"
+},
+{
+"name": "Record Accuracy %",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "1 - DIVIDE(SUM('DQ Checks'[Rows Failed]), SUM('DQ Checks'[Rows Checked]))",
+"description": "1 - failed records / checked records across all rules.",
+"formatString": "0.00%"
+},
+{
+"name": "DQ Exception Rows",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "COUNTROWS('DQ Exceptions') + 0",
+"description": "Row-level exceptions logged by the ETL.",
+"formatString": "#,0"
+},
+{
+"name": "Feeds Loaded Late",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "CALCULATE(COUNTROWS('DQ Load Log'), 'DQ Load Log'[SLA Status] = \"Late\") + 0",
+"description": "Country feeds loaded after the 3-day SLA.",
+"formatString": "#,0"
+},
+{
+"name": "Feed SLA %",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "DIVIDE(CALCULATE(COUNTROWS('DQ Load Log'), 'DQ Load Log'[SLA Status] = \"Within SLA\"), COUNTROWS('DQ Load Log'))",
+"description": "Share of feeds loaded within SLA.",
+"formatString": "0.0%"
+},
+{
+"name": "Imputed Discount Lines",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "CALCULATE(COUNTROWS(Sales), Sales[Discount Imputed] = 1) + 0",
+"description": "Order lines where a missing discount was imputed (DQ05).",
+"formatString": "#,0"
+},
+{
+"name": "Estimated COGS Share",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "DIVIDE(CALCULATE([COGS], Sales[COGS Estimated] = 1), [COGS])",
+"description": "Share of COGS estimated for unmapped SKUs (DQ02).",
+"formatString": "0.00%"
+},
+{
+"name": "Data As Of",
+"tableName": "_Measures",
+"displayFolder": "09 Data Quality",
+"expression": "\"Data as of \" & FORMAT([Last Actual Date], \"d mmm yyyy\")",
+"description": "Reporting cut-off label."
+},
+{
+"name": "Color YoY",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "IF([Net Sales YoY] >= 0, \"#1A7F5A\", \"#C23B3B\")",
+"description": "Green/red by YoY sign."
+},
+{
+"name": "Color vs Budget",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "IF([Net Sales vs Budget] >= 0, \"#1A7F5A\", \"#C23B3B\")",
+"description": "Green/red by budget variance."
+},
+{
+"name": "Color OTIF",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "SWITCH(TRUE(), ISBLANK([OTIF %]), BLANK(), [OTIF %] >= [OTIF Target], \"#1A7F5A\", [OTIF %] >= 0.88, \"#D98E04\", \"#C23B3B\")",
+"description": "Traffic light vs OTIF target (>= 95% green, >= 88% amber, else red)."
+},
+{
+"name": "Color DQ Status",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "SWITCH(SELECTEDVALUE('DQ Checks'[Status]), \"Pass\", \"#1A7F5A\", \"Warning\", \"#D98E04\", \"Fail\", \"#C23B3B\")",
+"description": "Traffic light for data-quality status."
+},
+{
+"name": "Color Scenario EBITDA",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "IF([Scenario EBITDA Impact] >= 0, \"#1A7F5A\", \"#C23B3B\")",
+"description": "Green/red by scenario impact."
+},
+{
+"name": "KPI Net Sales YoY Label",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _v = [Net Sales YoY %]\nRETURN IF(ISBLANK(_v), \"\", IF(_v >= 0, \"▲ \", \"▼ \") & FORMAT(ABS(_v), \"0.0%\") & \" vs PY\")",
+"description": "Arrow label for KPI cards."
+},
+{
+"name": "KPI Net Sales vs Budget Label",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _v = [Net Sales vs Budget %]\nRETURN IF(ISBLANK(_v), \"\", IF(_v >= 0, \"▲ \", \"▼ \") & FORMAT(ABS(_v), \"0.0%\") & \" vs budget\")",
+"description": "Arrow label for KPI cards."
+},
+{
+"name": "KPI GM pp Label",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _v = [Gross Margin % YoY (pp)]\nRETURN IF(ISBLANK(_v), \"\", IF(_v >= 0, \"▲ \", \"▼ \") & FORMAT(ABS(_v), \"0.0\") & \" pp vs PY\")",
+"description": "Arrow label for KPI cards."
+},
+{
+"name": "KPI EBITDA Label",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _v = [EBITDA YoY %]\nRETURN IF(ISBLANK(_v), \"\", IF(_v >= 0, \"▲ \", \"▼ \") & FORMAT(ABS(_v), \"0.0%\") & \" vs PY\")",
+"description": "Arrow label for KPI cards."
+},
+{
+"name": "KPI OTIF Label",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _v = [OTIF vs Target (pp)]\nRETURN IF(ISBLANK(_v), \"\", IF(_v >= 0, \"▲ \", \"▼ \") & FORMAT(ABS(_v), \"0.0\") & \" pp vs 95% target\")",
+"description": "Arrow label for KPI cards."
+},
+{
+"name": "Selected Period",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _min = MIN('Date'[Date])\nVAR _max = MIN(MAX('Date'[Date]), [Last Actual Date])\nRETURN\n    IF(\n        _max < _min,\n        \"Open period (forecast only)\",\n        FORMAT(_min, \"mmm yyyy\") & IF(FORMAT(_min, \"yyyymm\") <> FORMAT(_max, \"yyyymm\"), \" – \" & FORMAT(_max, \"mmm yyyy\"))\n    )",
+"description": "Closed months covered by the current date selection, e.g. 'Jan 2026 – Sep 2026'."
+},
+{
+"name": "Executive Summary",
+"tableName": "_Measures",
+"displayFolder": "10 Report UI",
+"expression": "VAR _ns = [Net Sales]\nVAR _yoy = [Net Sales YoY %]\nVAR _ccy = [Constant Currency Growth %]\nVAR _vb = [Net Sales vs Budget]\nVAR _gm = [Gross Margin %]\nVAR _gmpp = [Gross Margin % YoY (pp)]\nVAR _ebitda = [EBITDA %]\nVAR _otif = [OTIF %]\nVAR _ctry =\n    ADDCOLUMNS(VALUES(Country[Country]), \"@yoy\", [Net Sales YoY], \"@vb\", [Net Sales vs Budget])\nVAR _topGrowth = TOPN(1, _ctry, [@yoy], DESC)\nVAR _worstBudget = TOPN(1, _ctry, [@vb], ASC)\nVAR _fmtM = \"€#,0,,.0\"\"M\"\"\"\nRETURN\n    IF(\n        ISBLANK(_ns),\n        \"No closed-period data for the current selection.\",\n        \"Net sales of \" & FORMAT(_ns, _fmtM) & \" are \" & FORMAT(_yoy, \"+0.0%;-0.0%\") & \" vs prior year (\"\n            & FORMAT(_ccy, \"+0.0%;-0.0%\") & \" at constant FX) and \" & FORMAT(_vb, \"+€#,0,,.0\"\"M\"\";-€#,0,,.0\"\"M\"\"\")\n            & \" vs budget. Gross margin is \" & FORMAT(_gm, \"0.0%\") & \" (\" & FORMAT(_gmpp, \"+0.0;-0.0\") & \" pp YoY), EBITDA margin \"\n            & FORMAT(_ebitda, \"0.0%\") & \" and OTIF \" & FORMAT(_otif, \"0.0%\") & \". \"\n            & IF(COUNTROWS(_ctry) > 1,\n                \"Largest growth contributor: \" & MAXX(_topGrowth, Country[Country]) & \" (\" & FORMAT(MAXX(_topGrowth, [@yoy]), \"+€#,0,,.0\"\"M\"\";-€#,0,,.0\"\"M\"\"\")\n                & \"). Largest budget gap: \" & MAXX(_worstBudget, Country[Country]) & \" (\" & FORMAT(MAXX(_worstBudget, [@vb]), \"+€#,0,,.0\"\"M\"\";-€#,0,,.0\"\"M\"\"\") & \").\",\n                \"\")\n    )",
+"description": "Auto-generated narrative of the headline KPIs for the current selection."
+}
+]

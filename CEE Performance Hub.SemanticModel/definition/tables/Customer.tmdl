@@ -1,0 +1,70 @@
+/// B2B customers (CRM) with channel, sales rep, acquisition cohort and churn status.
+table Customer
+	lineageTag: 311dfec0-d41b-4c85-b27c-084b9b5df2c7
+
+	column 'Customer Code'
+		dataType: string
+		lineageTag: c4655ffb-e94d-44c5-a6a7-c0271d4c3849
+		sourceColumn: Customer Code
+
+	column Customer
+		dataType: string
+		lineageTag: 90678e4c-cdfb-46cd-b3ae-ef5f6fc6a702
+		isDefaultLabel
+		sourceColumn: Customer
+
+	column 'Country Code'
+		dataType: string
+		lineageTag: 9ea577db-3896-41ec-a269-0eca05680891
+		sourceColumn: Country Code
+
+	column City
+		dataType: string
+		lineageTag: 01687ca2-21ab-4d86-a823-574d796b97ba
+		sourceColumn: City
+
+	column 'Home Warehouse'
+		dataType: string
+		lineageTag: ba507f06-e8a6-438a-ab6e-26a83ae90841
+		sourceColumn: Home Warehouse
+
+	column Channel
+		dataType: string
+		lineageTag: 27f3bfae-8129-41ea-a879-9bf0fff02747
+		sourceColumn: Channel
+
+	column 'Sales Rep'
+		dataType: string
+		lineageTag: dcff3048-4f7e-4e38-99ab-b94deb12e9ed
+		sourceColumn: Sales Rep
+
+	column 'Customer Since'
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: 622b1a66-2fd8-4c0f-9f7d-e1d990676b41
+		sourceColumn: Customer Since
+
+	column 'Churn Date'
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: 796cb214-4930-4614-86c1-b2d8099ea5e1
+		sourceColumn: Churn Date
+
+	column 'Customer Status'
+		dataType: string
+		lineageTag: 9e2c4153-9b63-44e1-9e70-98a0e7ecb683
+		sourceColumn: Customer Status
+
+	column 'Acquisition Cohort'
+		dataType: string
+		lineageTag: 7bc37750-d314-4c10-8485-71972dfec337
+		sourceColumn: Acquisition Cohort
+
+	partition Customer = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_customer.parquet"))
+				in
+				    Source
+

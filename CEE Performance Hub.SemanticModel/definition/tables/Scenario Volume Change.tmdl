@@ -1,0 +1,15 @@
+/// What-if parameter: volume change applied to open (forecast) periods.
+table 'Scenario Volume Change'
+	lineageTag: 794a4a4a-edb8-4267-8aa0-a6bd1e4f5ecc
+
+	column 'Volume Change %'
+		formatString: +0%;-0%;0%
+		lineageTag: 8f682a50-59c1-42b9-b68b-c4e158f614c2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Volume Change %]
+
+	partition 'Scenario Volume Change' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(-10, 10, 1), "Volume Change %", [Value] / 100)
+

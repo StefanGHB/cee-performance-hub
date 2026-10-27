@@ -1,0 +1,96 @@
+relationship 'Sales_Order Date_Date_Date'
+	fromColumn: Sales.'Order Date'
+	toColumn: Date.Date
+
+relationship 'Sales_Customer Code_Customer_Customer Code'
+	fromColumn: Sales.'Customer Code'
+	toColumn: Customer.'Customer Code'
+
+relationship Sales_SKU_Product_SKU
+	fromColumn: Sales.SKU
+	toColumn: Product.SKU
+
+relationship 'Sales_Warehouse Code_Warehouse_Warehouse Code'
+	fromColumn: Sales.'Warehouse Code'
+	toColumn: Warehouse.'Warehouse Code'
+
+relationship 'Sales_Country Code_Country_Country Code'
+	fromColumn: Sales.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship 'Product_Category ID_Category_Category ID'
+	fromColumn: Product.'Category ID'
+	toColumn: Category.'Category ID'
+
+relationship Budget_Month_Date_Date
+	fromColumn: Budget.Month
+	toColumn: Date.Date
+
+relationship 'Budget_Country Code_Country_Country Code'
+	fromColumn: Budget.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship 'Budget_Category ID_Category_Category ID'
+	fromColumn: Budget.'Category ID'
+	toColumn: Category.'Category ID'
+
+relationship Opex_Month_Date_Date
+	fromColumn: Opex.Month
+	toColumn: Date.Date
+
+relationship 'Opex_Country Code_Country_Country Code'
+	fromColumn: Opex.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship 'Opex_P&L Key_P&L Line_P&L Key'
+	fromColumn: Opex.'P&L Key'
+	toColumn: 'P&L Line'.'P&L Key'
+
+relationship 'Inventory_Snapshot Date_Date_Date'
+	fromColumn: Inventory.'Snapshot Date'
+	toColumn: Date.Date
+
+relationship Inventory_SKU_Product_SKU
+	fromColumn: Inventory.SKU
+	toColumn: Product.SKU
+
+relationship 'Inventory_Warehouse Code_Warehouse_Warehouse Code'
+	fromColumn: Inventory.'Warehouse Code'
+	toColumn: Warehouse.'Warehouse Code'
+
+relationship 'Inventory_Country Code_Country_Country Code'
+	fromColumn: Inventory.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship Forecast_Month_Date_Date
+	fromColumn: Forecast.Month
+	toColumn: Date.Date
+
+relationship 'Forecast_Country Code_Country_Country Code'
+	fromColumn: Forecast.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship 'Forecast_Category ID_Category_Category ID'
+	fromColumn: Forecast.'Category ID'
+	toColumn: Category.'Category ID'
+
+relationship 'Forecast Accuracy_Country Code_Country_Country Code'
+	fromColumn: 'Forecast Accuracy'.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship 'Forecast Accuracy_Category ID_Category_Category ID'
+	fromColumn: 'Forecast Accuracy'.'Category ID'
+	toColumn: Category.'Category ID'
+
+relationship 'FX Rates_Month_Date_Date'
+	fromColumn: 'FX Rates'.Month
+	toColumn: Date.Date
+
+relationship 'DQ Load Log_Country Code_Country_Country Code'
+	fromColumn: 'DQ Load Log'.'Country Code'
+	toColumn: Country.'Country Code'
+
+relationship 'Forecast Interval_Month_Date_Date'
+	fromColumn: 'Forecast Interval'.Month
+	toColumn: Date.Date
+

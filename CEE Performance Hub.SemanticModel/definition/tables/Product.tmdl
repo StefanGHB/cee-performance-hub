@@ -1,0 +1,72 @@
+/// Product master (PIM) incl. 'Unmapped SKU' members created by the DQ02 rule.
+table Product
+	lineageTag: 1fd0c9c6-8608-465b-bdc5-53420d96a669
+
+	column SKU
+		dataType: string
+		lineageTag: 758e4007-410b-4b5f-a991-6f1fd3702e65
+		sourceColumn: SKU
+
+	column Product
+		dataType: string
+		lineageTag: edd323a9-eeb8-4745-988e-caeebc230d2f
+		sourceColumn: Product
+
+	column Brand
+		dataType: string
+		lineageTag: 6db6b488-f62c-471b-b5c9-b8ad6193c436
+		sourceColumn: Brand
+
+	column 'Category ID'
+		dataType: string
+		isHidden
+		lineageTag: 7a13d4e0-9a0c-4232-ba34-8451a872ce29
+		sourceColumn: Category ID
+
+	column Variant
+		dataType: string
+		lineageTag: 6cde086e-ad38-4169-9e3b-a9593e33684f
+		sourceColumn: Variant
+
+	column 'Pack Size'
+		dataType: string
+		lineageTag: 5701273f-955d-4df4-adf2-7282e304fa46
+		sourceColumn: Pack Size
+
+	column 'Product Status'
+		dataType: string
+		lineageTag: a647db8f-271a-470a-8d81-e84df58ac670
+		sourceColumn: Product Status
+
+	column 'Launch Date'
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: 6e58b777-bc70-4641-af78-ffe0ee16a15f
+		sourceColumn: Launch Date
+
+	column 'Discontinued Date'
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: f7d3af0e-6448-4da0-91aa-790281b323c3
+		sourceColumn: Discontinued Date
+
+	/// Brand > Product drill-down.
+	hierarchy 'Product Hierarchy'
+		lineageTag: 182bc79a-cca9-4f6e-b9f0-6c1fb537415f
+
+		level Brand
+			lineageTag: 6f958ed1-bca8-4186-9fba-e55d02626fa2
+			column: Brand
+
+		level Product
+			lineageTag: a4a82df6-4ef9-4d12-b510-730812a05be8
+			column: Product
+
+	partition Product = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_product.parquet"))
+				in
+				    Source
+

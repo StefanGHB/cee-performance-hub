@@ -1,0 +1,32 @@
+/// Product categories (budget is set at this grain).
+table Category
+	lineageTag: 0ab462e1-6a18-43c0-bd48-05fa9b790c5a
+
+	column 'Category ID'
+		dataType: string
+		isHidden
+		lineageTag: 2e03c5e3-6119-42e3-91b9-1fd85f8e66e8
+		sourceColumn: Category ID
+
+	column Category
+		dataType: string
+		lineageTag: 2a637a67-d7f0-4d70-9654-f3946bac23ae
+		sourceColumn: Category
+		sortByColumn: 'Category Sort'
+
+	column 'Category Sort'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 4850b7ed-8c48-4eac-b34d-903afe48f5c9
+		summarizeBy: none
+		sourceColumn: Category Sort
+
+	partition Category = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_category.parquet"))
+				in
+				    Source
+

@@ -1,0 +1,14 @@
+/// Dynamic row-level security: a country manager only sees the country whose Manager Email matches the signed-in user (USERPRINCIPALNAME). Filters all facts related to Country.
+role 'Country Manager'
+	modelPermission: read
+
+	tablePermission Country = [Manager Email] = USERPRINCIPALNAME()
+
+	tablePermission Customer = [Country Code] = LOOKUPVALUE(Country[Country Code], Country[Manager Email], USERPRINCIPALNAME())
+
+	tablePermission Warehouse = [Warehouse Country] = LOOKUPVALUE(Country[Country], Country[Manager Email], USERPRINCIPALNAME())
+
+	tablePermission 'Forecast Interval' = [Country Code] = LOOKUPVALUE(Country[Country Code], Country[Manager Email], USERPRINCIPALNAME())
+
+	annotation PBI_Id = 08abd1005f8e4470a573f22cd26ba11f
+

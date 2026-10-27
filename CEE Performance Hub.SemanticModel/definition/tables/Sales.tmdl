@@ -1,0 +1,234 @@
+/// Invoiced order lines (ERP). Grain: order line. Amounts in EUR at monthly average FX.
+table Sales
+	lineageTag: fd9d03a3-0ec6-4122-a290-88c82825e6ee
+
+	column 'Order ID'
+		dataType: string
+		isHidden
+		lineageTag: 148cb126-b03d-4705-9d40-e7641ed501b5
+		sourceColumn: Order ID
+
+	column 'Line No'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 9d0ce21b-c266-4592-a56d-957e9bb4a502
+		summarizeBy: none
+		sourceColumn: Line No
+
+	column 'Order Date'
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: e1a79376-f20c-4ef5-aa31-4333bde10f50
+		sourceColumn: Order Date
+
+	column 'Promised Date'
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: a6d72113-4ce8-44a0-a070-e13aa95db805
+		sourceColumn: Promised Date
+
+	column 'Ship Date'
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: 2736d794-e996-4acc-8138-8096cda04f9e
+		sourceColumn: Ship Date
+
+	column 'Delivery Date'
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: 9d5fe659-0267-4ff0-b4ad-e0dbfcc756f2
+		sourceColumn: Delivery Date
+
+	column 'Customer Code'
+		dataType: string
+		isHidden
+		lineageTag: 064ed15b-b098-46f9-af24-266d24c3e88a
+		sourceColumn: Customer Code
+
+	column SKU
+		dataType: string
+		isHidden
+		lineageTag: b18fe002-22ba-41e3-9bab-8a229ab2d66e
+		sourceColumn: SKU
+
+	column 'Warehouse Code'
+		dataType: string
+		isHidden
+		lineageTag: 1043bac7-9a53-433d-a00b-90486f94eea7
+		sourceColumn: Warehouse Code
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: f03b3d83-8f4f-4a76-9e4a-8a14e6dd4501
+		sourceColumn: Country Code
+
+	column 'Transaction Currency'
+		dataType: string
+		isHidden
+		lineageTag: cb831449-0fb9-41bf-aa75-4c2edbbc3115
+		sourceColumn: Transaction Currency
+
+	column 'Functional Currency'
+		dataType: string
+		isHidden
+		lineageTag: 38fe6a3a-ecba-43d4-96ca-7140f87ee149
+		sourceColumn: Functional Currency
+
+	column 'Is Promo'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 208b31bd-72bc-4ee9-a5d1-3a4fe2930e71
+		summarizeBy: none
+		sourceColumn: Is Promo
+
+	column 'Qty Ordered'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 0fdf3b42-d154-4f60-95b9-7017a8907aaa
+		summarizeBy: none
+		sourceColumn: Qty Ordered
+
+	column 'Qty Delivered'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 897e109d-9156-466f-9ea5-fd58580a8573
+		summarizeBy: none
+		sourceColumn: Qty Delivered
+
+	column 'Discount %'
+		dataType: double
+		isHidden
+		formatString: 0.0%
+		lineageTag: 310d95a4-8869-4e30-ab8f-8ad5c5663f59
+		summarizeBy: none
+		sourceColumn: Discount %
+
+	column 'Discount Imputed'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: e6ff20cd-bcc6-4f0a-affc-0815a5873937
+		summarizeBy: none
+		sourceColumn: Discount Imputed
+
+	column 'FX Rate'
+		dataType: double
+		isHidden
+		formatString: #,0.0000
+		lineageTag: 3bb90d63-dd67-4c9a-8b23-023bb47bc3c1
+		summarizeBy: none
+		sourceColumn: FX Rate
+
+	column 'Net Sales LCY'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: acddb83d-02ed-4976-9dd9-9996644ce47b
+		summarizeBy: none
+		sourceColumn: Net Sales LCY
+
+	column 'Gross Sales EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 03d5b695-09df-42d4-b7e2-dc8846c4c779
+		summarizeBy: none
+		sourceColumn: Gross Sales EUR
+
+	column 'Discount EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: c285b599-7ab0-4681-91f7-394d3ceb1209
+		summarizeBy: none
+		sourceColumn: Discount EUR
+
+	column 'Net Sales EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 1324eb14-371c-4b0e-be54-769a20ff03a9
+		summarizeBy: none
+		sourceColumn: Net Sales EUR
+
+	column 'Net Sales EUR @PY FX'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 4769f1a9-5518-4c2a-b96d-55a34c402d6d
+		summarizeBy: none
+		sourceColumn: Net Sales EUR @PY FX
+
+	column 'COGS EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 75f55e91-4695-4df2-8903-3e26809c8624
+		summarizeBy: none
+		sourceColumn: COGS EUR
+
+	column 'COGS Estimated'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 48672c90-7821-469c-b377-0c3d25b4191a
+		summarizeBy: none
+		sourceColumn: COGS Estimated
+
+	column 'Unfulfilled Net EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 97e66d83-47e1-478d-b720-00a54e5d308c
+		summarizeBy: none
+		sourceColumn: Unfulfilled Net EUR
+
+	column 'Lead Time Days'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: f8fec441-51d2-489a-b8ef-37e4ab140f78
+		summarizeBy: none
+		sourceColumn: Lead Time Days
+
+	column 'On Time'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 2398cb81-da71-4fb5-9010-5d0fce3ea25f
+		summarizeBy: none
+		sourceColumn: On Time
+
+	column 'In Full'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 9f768c26-15c9-4eb1-bb77-001377dbd555
+		summarizeBy: none
+		sourceColumn: In Full
+
+	column OTIF
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 9d3f7657-5174-4a44-93f7-0eeda95a371c
+		summarizeBy: none
+		sourceColumn: OTIF
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fact_sales.parquet"))
+				in
+				    Source
+

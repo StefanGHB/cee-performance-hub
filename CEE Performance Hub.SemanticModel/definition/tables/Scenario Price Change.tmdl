@@ -1,0 +1,15 @@
+/// What-if parameter: list-price change applied to open (forecast) periods.
+table 'Scenario Price Change'
+	lineageTag: f05b23ce-5773-4e9c-aae6-414d111fa3d0
+
+	column 'Price Change %'
+		formatString: +0%;-0%;0%
+		lineageTag: e65c02c4-3c32-4a2d-a88d-43d5001e7a92
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Price Change %]
+
+	partition 'Scenario Price Change' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(-10, 10, 1), "Price Change %", [Value] / 100)
+

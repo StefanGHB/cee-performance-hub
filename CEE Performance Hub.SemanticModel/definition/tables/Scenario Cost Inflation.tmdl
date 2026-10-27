@@ -1,0 +1,15 @@
+/// What-if parameter: unit cost (COGS) inflation applied to open (forecast) periods.
+table 'Scenario Cost Inflation'
+	lineageTag: fd57856c-a935-4e93-87c5-ee4d328fb55d
+
+	column 'Cost Inflation %'
+		formatString: +0%;-0%;0%
+		lineageTag: 41e31bed-aa86-4f0d-90f9-40c7877cdf73
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Cost Inflation %]
+
+	partition 'Scenario Cost Inflation' = calculated
+		mode: import
+		source = SELECTCOLUMNS(GENERATESERIES(-5, 10, 1), "Cost Inflation %", [Value] / 100)
+

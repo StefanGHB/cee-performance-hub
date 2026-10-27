@@ -1,0 +1,165 @@
+/// Calendar 2023-2027. Reporting cut-off (last closed month): 30 Sep 2026.
+table Date
+	lineageTag: 51e368c2-e3cc-44a0-bbdd-fed80cbc513a
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isUnique
+		isKey
+		formatString: dd mmm yyyy
+		lineageTag: c9bb998f-8e3d-4b85-8db2-d90db9e74187
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 999ec613-657f-480d-8a26-052964c485d3
+		summarizeBy: none
+		sourceColumn: Year
+
+	column Quarter
+		dataType: string
+		lineageTag: 118ccb64-bcb3-413a-ae18-0255bb29b6fa
+		sourceColumn: Quarter
+
+	column 'Year Quarter'
+		dataType: string
+		lineageTag: 97fb36db-daff-4924-beef-e4ec1f94fd68
+		sourceColumn: Year Quarter
+		sortByColumn: 'Year Quarter Sort'
+
+	column 'Year Quarter Sort'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c5b9ccde-434f-4a39-b4f4-bb201292b6b0
+		summarizeBy: none
+		sourceColumn: Year Quarter Sort
+
+	column 'Month No'
+		dataType: int64
+		formatString: #,0
+		lineageTag: d0ef26e1-5c9f-4a08-b597-db3e24514d01
+		summarizeBy: none
+		sourceColumn: Month No
+
+	column Month
+		dataType: string
+		lineageTag: 16723b5e-4f18-4a32-837b-4e8adda53b66
+		sourceColumn: Month
+		sortByColumn: 'Month No'
+
+	column 'Month Short'
+		dataType: string
+		lineageTag: e9b91def-0e75-4bb4-ab53-3e13182bde91
+		sourceColumn: Month Short
+		sortByColumn: 'Month No'
+
+	column 'Year Month'
+		dataType: string
+		lineageTag: 407fc164-4567-45f5-a35d-e4e2d5898584
+		sourceColumn: Year Month
+		sortByColumn: 'Year Month Sort'
+
+	column 'Year Month Sort'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 385f09b6-f1b5-4d1f-b9a2-6eda29543c39
+		summarizeBy: none
+		sourceColumn: Year Month Sort
+
+	column 'Month Start'
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: c7666049-a0a3-4ba0-bf2b-37fcdb324324
+		sourceColumn: Month Start
+
+	column 'ISO Week'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 5615a71b-a525-4b76-aa77-094461423a51
+		summarizeBy: none
+		sourceColumn: ISO Week
+
+	column Weekday
+		dataType: string
+		lineageTag: 897fd58e-4a40-4d8e-9956-aa3124b8ae30
+		sourceColumn: Weekday
+		sortByColumn: 'Weekday No'
+
+	column 'Weekday No'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: af9d5b2c-6136-45f6-853f-8dbbef427923
+		summarizeBy: none
+		sourceColumn: Weekday No
+
+	column 'Is Weekend'
+		dataType: boolean
+		lineageTag: e7c31123-59fc-426d-8479-531008224633
+		sourceColumn: Is Weekend
+
+	column 'Is Actual Period'
+		dataType: boolean
+		isHidden
+		lineageTag: a8ea5f31-8b10-485c-b9fa-328d4ba4a415
+		sourceColumn: Is Actual Period
+
+	column 'Period Type'
+		dataType: string
+		lineageTag: affe4a8a-cdea-4361-804a-47385f405109
+		sourceColumn: Period Type
+
+	column 'Month Offset'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 29e6d677-7bbc-4a83-af74-c05aef78182a
+		summarizeBy: none
+		sourceColumn: Month Offset
+
+	column 'Year Offset'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		lineageTag: 8cbbfc43-3569-4998-8a34-3d0a32705f75
+		summarizeBy: none
+		sourceColumn: Year Offset
+
+	column 'Is YTD Month'
+		dataType: boolean
+		isHidden
+		lineageTag: 465878af-c0b0-4d53-a7b9-3635ec220f9d
+		sourceColumn: Is YTD Month
+
+	/// Year > Quarter > Month > Date drill-down.
+	hierarchy Calendar
+		lineageTag: 88f75f05-91e1-49c6-b133-a4f0826afb31
+
+		level Year
+			lineageTag: f0a0aac6-4230-46e0-a496-fe0cbbdae4ea
+			column: Year
+
+		level Quarter
+			lineageTag: c780dc6f-e378-4fec-9d6d-ae062d521f6b
+			column: 'Year Quarter'
+
+		level Month
+			lineageTag: 1b3ce37f-6718-4f49-a005-9e8993ade58a
+			column: 'Year Month'
+
+		level Date
+			lineageTag: b5faf9d7-9c05-48d7-b8ef-731749fd5022
+			column: Date
+
+	partition Date = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_date.parquet"))
+				in
+				    Source
+

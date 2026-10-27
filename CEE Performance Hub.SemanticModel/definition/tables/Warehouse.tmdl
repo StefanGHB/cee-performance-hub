@@ -1,0 +1,32 @@
+/// Distribution centres (WMS).
+table Warehouse
+	lineageTag: f84155e5-c9e3-40f6-88cf-b01a047aa308
+
+	column 'Warehouse Code'
+		dataType: string
+		lineageTag: 2089d2e6-861d-46ef-a3dd-d0bd494b9860
+		sourceColumn: Warehouse Code
+
+	column Warehouse
+		dataType: string
+		lineageTag: dc554548-83aa-4493-aec1-7b5856936c39
+		sourceColumn: Warehouse
+
+	column 'Warehouse City'
+		dataType: string
+		lineageTag: 4013e6cc-990c-4d46-812a-f8fe4dc6b8bf
+		sourceColumn: Warehouse City
+
+	column 'Warehouse Country'
+		dataType: string
+		lineageTag: aa5fd3a2-e687-457f-bda3-b36edd01281b
+		sourceColumn: Warehouse Country
+
+	partition Warehouse = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "dim_warehouse.parquet"))
+				in
+				    Source
+

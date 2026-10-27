@@ -1,0 +1,33 @@
+/// Monthly average FX rates, local currency units per 1 EUR (Treasury).
+table 'FX Rates'
+	lineageTag: 09d54879-5fcf-4a93-9057-ad28c443df83
+
+	column Month
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: a0176952-712d-4cda-8ab7-cc69dcacecc0
+		sourceColumn: Month
+
+	column Currency
+		dataType: string
+		isHidden
+		lineageTag: b80b4bc9-59f6-4528-aa5c-d602555fa865
+		sourceColumn: Currency
+
+	column 'LCY per EUR'
+		dataType: double
+		isHidden
+		formatString: #,0.0000
+		lineageTag: 68bcffb8-d5ed-4d58-8e11-2ef4c55cf05b
+		summarizeBy: none
+		sourceColumn: LCY per EUR
+
+	partition 'FX Rates' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fact_fx.parquet"))
+				in
+				    Source
+

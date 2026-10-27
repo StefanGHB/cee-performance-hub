@@ -1,0 +1,21 @@
+/// Steps of the net sales bridge (PY -> Volume -> Price -> Mix -> FX -> CY).
+table 'Bridge Step'
+	lineageTag: e971f91b-4fd9-44c6-a1fe-e8b1b401c448
+
+	column Step
+		lineageTag: 8777a7aa-7568-42a1-ab83-680c087a053c
+		isNameInferred
+		sourceColumn: [Step]
+		sortByColumn: 'Step Sort'
+
+	column 'Step Sort'
+		isHidden
+		lineageTag: d59e9279-88bc-4bfd-8ffa-3026a37664bd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Step Sort]
+
+	partition 'Bridge Step' = calculated
+		mode: import
+		source = DATATABLE("Step", STRING, "Step Sort", INTEGER, {{"Net Sales PY", 1}, {"Volume", 2}, {"Price", 3}, {"Mix & Other", 4}, {"FX", 5}})
+

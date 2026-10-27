@@ -1,0 +1,11 @@
+warehouse_code,warehouse,country_code,city,lat,lon
+PL-WAW,Warsaw DC,PL,Warsaw,52.23,21.01
+PL-POZ,Poznan DC,PL,Poznan,52.41,16.93
+RO-BUC,Bucharest DC,RO,Bucharest,44.43,26.1
+RO-CLJ,Cluj DC,RO,Cluj-Napoca,46.77,23.62
+CZ-PRG,Prague DC,CZ,Prague,50.08,14.43
+HU-BUD,Budapest DC,HU,Budapest,47.5,19.04
+GR-ATH,Athens DC,GR,Athens,37.98,23.73
+BG-SOF,Sofia DC,BG,Sofia,42.7,23.32
+RS-BEG,Belgrade DC,RS,Belgrade,44.79,20.45
+HR-ZAG,Zagreb DC,HR,Zagreb,45.81,15.98

@@ -1,0 +1,181 @@
+sku,product_name,brand,category_id,variant,pack_size,list_price_2023_eur,launch_date,discontinued_date,status
+BEV-1001,AquaPeak Still Water 12x0.5L,AquaPeak,BEV,Still Water,12x0.5L,12.29,2019-01-01,,Active
+BEV-1002,AquaPeak Cola 24x0.33L,AquaPeak,BEV,Cola,24x0.33L,17.91,2019-01-01,,Active
+BEV-1003,VitaPress Lemonade 6x1.5L,VitaPress,BEV,Lemonade,6x1.5L,12.45,2019-01-01,,Active
+BEV-1004,AquaPeak Sparkling Water 6x1.5L,AquaPeak,BEV,Sparkling Water,6x1.5L,8.49,2019-01-01,,Active
+BEV-1005,Citrella Orange Juice 24x0.33L,Citrella,BEV,Orange Juice,24x0.33L,7.02,2019-01-01,,Active
+BEV-1006,Fizzo Sparkling Water 6x1.5L,Fizzo,BEV,Sparkling Water,6x1.5L,12.59,2019-01-01,,Active
+BEV-1007,Citrella Lemonade 6x1.5L,Citrella,BEV,Lemonade,6x1.5L,8.59,2019-01-01,,Active
+BEV-1008,AquaPeak Orange Juice 12x0.5L,AquaPeak,BEV,Orange Juice,12x0.5L,8.27,2019-01-01,,Active
+BEV-1009,Citrella Sparkling Water 6x1.5L,Citrella,BEV,Sparkling Water,6x1.5L,12.61,2019-01-01,,Active
+BEV-1010,Fizzo Still Water 12x0.5L,Fizzo,BEV,Still Water,12x0.5L,16.73,2019-01-01,,Active
+BEV-1011,Fizzo Sparkling Water 24x0.33L,Fizzo,BEV,Sparkling Water,24x0.33L,8.33,2019-01-01,,Active
+BEV-1012,Citrella Tonic 24x0.33L,Citrella,BEV,Tonic,24x0.33L,14.91,2025-01-21,,New
+BEV-1013,Fizzo Lemonade 6x1.5L,Fizzo,BEV,Lemonade,6x1.5L,13.41,2019-01-01,,Active
+BEV-1014,Citrella Apple Juice 12x0.5L,Citrella,BEV,Apple Juice,12x0.5L,14.77,2019-01-01,,Active
+BEV-1015,Citrella Tonic 12x0.5L,Citrella,BEV,Tonic,12x0.5L,14.18,2019-01-01,,Active
+BEV-1016,AquaPeak Multivitamin Juice 6x1.5L,AquaPeak,BEV,Multivitamin Juice,6x1.5L,9.34,2019-01-01,,Active
+BEV-1017,AquaPeak Tonic 24x0.33L,AquaPeak,BEV,Tonic,24x0.33L,8.83,2025-03-15,,New
+BEV-1018,Fizzo Apple Juice 24x0.33L,Fizzo,BEV,Apple Juice,24x0.33L,10.62,2019-01-01,,Active
+BEV-1019,Fizzo Energy Drink 12x0.5L,Fizzo,BEV,Energy Drink,12x0.5L,13.73,2019-01-01,,Active
+BEV-1020,Citrella Cola 12x0.5L,Citrella,BEV,Cola,12x0.5L,8.35,2019-01-01,,Active
+BEV-1021,Fizzo Still Water 24x0.33L,Fizzo,BEV,Still Water,24x0.33L,14.94,2019-01-01,,Active
+BEV-1022,VitaPress Orange Juice 24x0.33L,VitaPress,BEV,Orange Juice,24x0.33L,16.7,2019-01-01,,Active
+BEV-1023,Citrella Still Water 24x0.33L,Citrella,BEV,Still Water,24x0.33L,16.39,2019-01-01,,Active
+BEV-1024,AquaPeak Iced Tea Peach 12x0.5L,AquaPeak,BEV,Iced Tea Peach,12x0.5L,15.78,2019-01-01,,Active
+BEV-1025,Citrella Iced Tea Peach 24x0.33L,Citrella,BEV,Iced Tea Peach,24x0.33L,7.05,2019-01-01,,Active
+BEV-1026,VitaPress Sparkling Water 6x1.5L,VitaPress,BEV,Sparkling Water,6x1.5L,15.39,2019-01-01,,Active
+BEV-1027,Citrella Tonic 6x1.5L,Citrella,BEV,Tonic,6x1.5L,17.41,2019-01-01,,Active
+BEV-1028,AquaPeak Apple Juice 6x1.5L,AquaPeak,BEV,Apple Juice,6x1.5L,17.16,2025-03-30,,New
+BEV-1029,VitaPress Cola 24x0.33L,VitaPress,BEV,Cola,24x0.33L,10.63,2019-01-01,,Active
+BEV-1030,Citrella Apple Juice 6x1.5L,Citrella,BEV,Apple Juice,6x1.5L,15.91,2019-01-01,,Active
+SNK-1031,ChocoNova Protein Bar 12x100g,ChocoNova,SNK,Protein Bar,12x100g,27.27,2019-01-01,,Active
+SNK-1032,Sweet Danube Paprika Crisps 10x200g,Sweet Danube,SNK,Paprika Crisps,10x200g,20.62,2019-01-01,,Active
+SNK-1033,Nutty Bay Gummies 24x40g,Nutty Bay,SNK,Gummies,24x40g,28.71,2019-01-01,,Active
+SNK-1034,Sweet Danube Salted Crisps 24x40g,Sweet Danube,SNK,Salted Crisps,24x40g,15.75,2019-01-01,,Active
+SNK-1035,ChocoNova Milk Chocolate 12x100g,ChocoNova,SNK,Milk Chocolate,12x100g,23.61,2019-01-01,,Active
+SNK-1036,Crunchy Hills Pretzels 24x40g,Crunchy Hills,SNK,Pretzels,24x40g,25.97,2019-01-01,,Active
+SNK-1037,Nutty Bay Gummies 10x200g,Nutty Bay,SNK,Gummies,10x200g,13.32,2019-01-01,,Active
+SNK-1038,Crunchy Hills Salted Crisps 10x200g,Crunchy Hills,SNK,Salted Crisps,10x200g,21.05,2019-01-01,,Active
+SNK-1039,Sweet Danube Wafer 10x200g,Sweet Danube,SNK,Wafer,10x200g,17.6,2019-01-01,,Active
+SNK-1040,Crunchy Hills Paprika Crisps 12x100g,Crunchy Hills,SNK,Paprika Crisps,12x100g,26.28,2019-01-01,,Active
+SNK-1041,Crunchy Hills Wafer 24x40g,Crunchy Hills,SNK,Wafer,24x40g,23.46,2019-01-01,,Active
+SNK-1042,ChocoNova Salted Crisps 12x100g,ChocoNova,SNK,Salted Crisps,12x100g,14.37,2019-01-01,,Active
+SNK-1043,ChocoNova Pretzels 12x100g,ChocoNova,SNK,Pretzels,12x100g,17.92,2025-02-13,,New
+SNK-1044,Sweet Danube Mixed Nuts 12x100g,Sweet Danube,SNK,Mixed Nuts,12x100g,18.22,2019-01-01,,Active
+SNK-1045,Nutty Bay Salted Crisps 10x200g,Nutty Bay,SNK,Salted Crisps,10x200g,19.83,2019-01-01,,Active
+SNK-1046,Nutty Bay Wafer 10x200g,Nutty Bay,SNK,Wafer,10x200g,16.15,2019-01-01,,Active
+SNK-1047,ChocoNova Paprika Crisps 10x200g,ChocoNova,SNK,Paprika Crisps,10x200g,16.11,2019-01-01,,Active
+SNK-1048,Crunchy Hills Gummies 24x40g,Crunchy Hills,SNK,Gummies,24x40g,20.97,2019-01-01,,Active
+SNK-1049,Crunchy Hills Mixed Nuts 12x100g,Crunchy Hills,SNK,Mixed Nuts,12x100g,20.83,2019-01-01,,Active
+SNK-1050,Sweet Danube Pretzels 12x100g,Sweet Danube,SNK,Pretzels,12x100g,14.47,2019-01-01,,Active
+SNK-1051,Nutty Bay Protein Bar 12x100g,Nutty Bay,SNK,Protein Bar,12x100g,19.38,2019-01-01,,Active
+SNK-1052,ChocoNova Pretzels 24x40g,ChocoNova,SNK,Pretzels,24x40g,24.61,2019-01-01,,Active
+SNK-1053,Nutty Bay Wafer 24x40g,Nutty Bay,SNK,Wafer,24x40g,25.27,2019-01-01,,Active
+SNK-1054,Sweet Danube Salted Crisps 10x200g,Sweet Danube,SNK,Salted Crisps,10x200g,12.89,2019-01-01,,Active
+SNK-1055,ChocoNova Dark Chocolate 12x100g,ChocoNova,SNK,Dark Chocolate,12x100g,25.1,2019-01-01,,Active
+SNK-1056,Sweet Danube Biscuits 24x40g,Sweet Danube,SNK,Biscuits,24x40g,23.05,2019-01-01,,Active
+SNK-1057,ChocoNova Paprika Crisps 12x100g,ChocoNova,SNK,Paprika Crisps,12x100g,30.97,2019-01-01,,Active
+SNK-1058,Nutty Bay Dark Chocolate 12x100g,Nutty Bay,SNK,Dark Chocolate,12x100g,17.8,2019-01-01,2025-04-11,Discontinued
+SNK-1059,Crunchy Hills Gummies 12x100g,Crunchy Hills,SNK,Gummies,12x100g,19.72,2019-01-01,,Active
+SNK-1060,Sweet Danube Mixed Nuts 10x200g,Sweet Danube,SNK,Mixed Nuts,10x200g,16.95,2019-01-01,,Active
+COF-1061,Aroma Bianca Instant Gold 8x500g,Aroma Bianca,COF,Instant Gold,8x500g,33.63,2019-01-01,2024-12-27,Discontinued
+COF-1062,Leafline Cold Brew 8x500g,Leafline,COF,Cold Brew,8x500g,55.98,2019-01-01,,Active
+COF-1063,Aroma Bianca Decaf Ground 8x500g,Aroma Bianca,COF,Decaf Ground,8x500g,37.42,2019-01-01,,Active
+COF-1064,Aroma Bianca Herbal Tea 6x250g,Aroma Bianca,COF,Herbal Tea,6x250g,45.54,2019-01-01,,Active
+COF-1065,Leafline Herbal Tea 10x1kg,Leafline,COF,Herbal Tea,10x1kg,31.31,2019-01-01,,Active
+COF-1066,Black Ridge Instant Gold 6x250g,Black Ridge,COF,Instant Gold,6x250g,49.4,2019-01-01,,Active
+COF-1067,Kavanta Ground Classic 6x250g,Kavanta,COF,Ground Classic,6x250g,60.0,2019-01-01,,Active
+COF-1068,Leafline Herbal Tea 6x250g,Leafline,COF,Herbal Tea,6x250g,27.82,2019-01-01,,Active
+COF-1069,Black Ridge Decaf Ground 8x500g,Black Ridge,COF,Decaf Ground,8x500g,40.57,2019-01-01,,Active
+COF-1070,Black Ridge Herbal Tea 8x500g,Black Ridge,COF,Herbal Tea,8x500g,32.02,2019-01-01,,Active
+COF-1071,Kavanta Capsules Ristretto 10x1kg,Kavanta,COF,Capsules Ristretto,10x1kg,53.05,2019-01-01,,Active
+COF-1072,Leafline Instant Gold 6x250g,Leafline,COF,Instant Gold,6x250g,47.16,2019-01-01,,Active
+COF-1073,Leafline Black Tea 8x500g,Leafline,COF,Black Tea,8x500g,48.36,2024-06-25,,New
+COF-1074,Leafline Espresso Beans 10x1kg,Leafline,COF,Espresso Beans,10x1kg,54.67,2019-01-01,,Active
+COF-1075,Leafline Cold Brew 6x250g,Leafline,COF,Cold Brew,6x250g,37.62,2019-01-01,,Active
+COF-1076,Kavanta Instant Gold 6x250g,Kavanta,COF,Instant Gold,6x250g,33.5,2019-01-01,,Active
+COF-1077,Aroma Bianca Cold Brew 6x250g,Aroma Bianca,COF,Cold Brew,6x250g,33.51,2019-01-01,,Active
+COF-1078,Black Ridge Black Tea 6x250g,Black Ridge,COF,Black Tea,6x250g,46.26,2019-01-01,,Active
+COF-1079,Leafline Ground Classic 8x500g,Leafline,COF,Ground Classic,8x500g,42.13,2019-01-01,,Active
+COF-1080,Aroma Bianca Espresso Beans 8x500g,Aroma Bianca,COF,Espresso Beans,8x500g,20.07,2019-01-01,,Active
+COF-1081,Leafline Ground Classic 10x1kg,Leafline,COF,Ground Classic,10x1kg,24.02,2025-06-24,,New
+COF-1082,Black Ridge Capsules Lungo 10x1kg,Black Ridge,COF,Capsules Lungo,10x1kg,29.28,2019-01-01,,Active
+COF-1083,Kavanta Cold Brew 10x1kg,Kavanta,COF,Cold Brew,10x1kg,25.98,2019-01-01,,Active
+COF-1084,Black Ridge Capsules Ristretto 6x250g,Black Ridge,COF,Capsules Ristretto,6x250g,47.26,2019-01-01,,Active
+COF-1085,Aroma Bianca Capsules Ristretto 8x500g,Aroma Bianca,COF,Capsules Ristretto,8x500g,21.95,2019-01-01,,Active
+COF-1086,Kavanta Decaf Ground 10x1kg,Kavanta,COF,Decaf Ground,10x1kg,32.21,2019-01-01,,Active
+COF-1087,Black Ridge Capsules Lungo 8x500g,Black Ridge,COF,Capsules Lungo,8x500g,36.98,2019-01-01,,Active
+COF-1088,Leafline Espresso Beans 6x250g,Leafline,COF,Espresso Beans,6x250g,25.84,2019-01-01,2024-07-11,Discontinued
+COF-1089,Aroma Bianca Capsules Ristretto 6x250g,Aroma Bianca,COF,Capsules Ristretto,6x250g,38.11,2019-01-01,,Active
+COF-1090,Leafline Black Tea 6x250g,Leafline,COF,Black Tea,6x250g,55.54,2019-01-01,,Active
+HOM-1091,Lumio Home Bleach 8x1L,Lumio Home,HOM,Bleach,8x1L,32.74,2019-01-01,,Active
+HOM-1092,CleanWave Surface Spray 8x1L,CleanWave,HOM,Surface Spray,8x1L,31.28,2019-01-01,,Active
+HOM-1093,OxyGuard Glass Cleaner 4x3L,OxyGuard,HOM,Glass Cleaner,4x3L,16.8,2019-01-01,,Active
+HOM-1094,Sparkla Toilet Cleaner 12x500ml,Sparkla,HOM,Toilet Cleaner,12x500ml,33.27,2019-01-01,,Active
+HOM-1095,CleanWave Fabric Softener 4x3L,CleanWave,HOM,Fabric Softener,4x3L,31.05,2019-01-01,,Active
+HOM-1096,OxyGuard Fabric Softener 12x500ml,OxyGuard,HOM,Fabric Softener,12x500ml,36.05,2019-01-01,,Active
+HOM-1097,Sparkla Dish Liquid 12x500ml,Sparkla,HOM,Dish Liquid,12x500ml,15.82,2019-01-01,,Active
+HOM-1098,Lumio Home Surface Spray 4x3L,Lumio Home,HOM,Surface Spray,4x3L,20.38,2019-01-01,,Active
+HOM-1099,Sparkla Stain Remover 8x1L,Sparkla,HOM,Stain Remover,8x1L,32.87,2019-01-01,,Active
+HOM-1100,Sparkla Dishwasher Tabs 4x3L,Sparkla,HOM,Dishwasher Tabs,4x3L,26.15,2025-01-20,,New
+HOM-1101,Lumio Home Bleach 4x3L,Lumio Home,HOM,Bleach,4x3L,14.24,2019-01-01,,Active
+HOM-1102,OxyGuard Laundry Gel 12x500ml,OxyGuard,HOM,Laundry Gel,12x500ml,33.7,2019-01-01,,Active
+HOM-1103,Lumio Home Fabric Softener 8x1L,Lumio Home,HOM,Fabric Softener,8x1L,33.98,2019-01-01,,Active
+HOM-1104,Lumio Home Toilet Cleaner 4x3L,Lumio Home,HOM,Toilet Cleaner,4x3L,15.43,2019-01-01,,Active
+HOM-1105,Lumio Home Stain Remover 12x500ml,Lumio Home,HOM,Stain Remover,12x500ml,29.56,2019-01-01,,Active
+HOM-1106,CleanWave Laundry Powder 8x1L,CleanWave,HOM,Laundry Powder,8x1L,27.88,2019-01-01,,Active
+HOM-1107,Lumio Home Stain Remover 4x3L,Lumio Home,HOM,Stain Remover,4x3L,28.47,2019-01-01,,Active
+HOM-1108,Lumio Home Surface Spray 12x500ml,Lumio Home,HOM,Surface Spray,12x500ml,20.02,2019-01-01,,Active
+HOM-1109,Sparkla Glass Cleaner 4x3L,Sparkla,HOM,Glass Cleaner,4x3L,23.53,2019-01-01,,Active
+HOM-1110,Sparkla Toilet Cleaner 8x1L,Sparkla,HOM,Toilet Cleaner,8x1L,22.24,2024-07-21,,New
+HOM-1111,Lumio Home Dishwasher Tabs 8x1L,Lumio Home,HOM,Dishwasher Tabs,8x1L,14.93,2019-01-01,,Active
+HOM-1112,OxyGuard Glass Cleaner 12x500ml,OxyGuard,HOM,Glass Cleaner,12x500ml,16.85,2019-01-01,,Active
+HOM-1113,Lumio Home Glass Cleaner 12x500ml,Lumio Home,HOM,Glass Cleaner,12x500ml,21.6,2019-01-01,,Active
+HOM-1114,CleanWave Surface Spray 4x3L,CleanWave,HOM,Surface Spray,4x3L,15.33,2019-01-01,,Active
+HOM-1115,CleanWave Toilet Cleaner 4x3L,CleanWave,HOM,Toilet Cleaner,4x3L,27.6,2019-01-01,,Active
+HOM-1116,Lumio Home Dish Liquid 12x500ml,Lumio Home,HOM,Dish Liquid,12x500ml,14.58,2025-06-09,,New
+HOM-1117,Sparkla Toilet Cleaner 4x3L,Sparkla,HOM,Toilet Cleaner,4x3L,19.09,2019-01-01,,Active
+HOM-1118,OxyGuard Laundry Gel 8x1L,OxyGuard,HOM,Laundry Gel,8x1L,28.51,2019-01-01,,Active
+HOM-1119,CleanWave Toilet Cleaner 8x1L,CleanWave,HOM,Toilet Cleaner,8x1L,31.8,2019-01-01,,Active
+HOM-1120,Lumio Home Bleach 12x500ml,Lumio Home,HOM,Bleach,12x500ml,38.44,2019-01-01,,Active
+PER-1121,Dermaline Shower Gel 6x400ml,Dermaline,PER,Shower Gel,6x400ml,20.97,2019-01-01,,Active
+PER-1122,Dermaline Conditioner 6x400ml,Dermaline,PER,Conditioner,6x400ml,20.28,2019-01-01,,Active
+PER-1123,Aquasilk Sun Cream SPF50 24x75ml,Aquasilk,PER,Sun Cream SPF50,24x75ml,19.43,2019-01-01,,Active
+PER-1124,Dermaline Razor Blades 6x400ml,Dermaline,PER,Razor Blades,6x400ml,23.94,2019-01-01,,Active
+PER-1125,Dermaline Hand Soap 12x250ml,Dermaline,PER,Hand Soap,12x250ml,23.25,2019-01-01,,Active
+PER-1126,Dermaline Toothpaste 24x75ml,Dermaline,PER,Toothpaste,24x75ml,36.15,2019-01-01,,Active
+PER-1127,NordFresh Shampoo 24x75ml,NordFresh,PER,Shampoo,24x75ml,32.57,2019-01-01,,Active
+PER-1128,NordFresh Toothpaste 24x75ml,NordFresh,PER,Toothpaste,24x75ml,39.88,2019-01-01,,Active
+PER-1129,Velora Face Cream 6x400ml,Velora,PER,Face Cream,6x400ml,26.91,2019-01-01,,Active
+PER-1130,Dermaline Body Lotion 24x75ml,Dermaline,PER,Body Lotion,24x75ml,23.07,2019-01-01,,Active
+PER-1131,Velora Conditioner 6x400ml,Velora,PER,Conditioner,6x400ml,32.67,2019-01-01,,Active
+PER-1132,Dermaline Face Cream 6x400ml,Dermaline,PER,Face Cream,6x400ml,36.04,2019-01-01,,Active
+PER-1133,Aquasilk Deodorant 6x400ml,Aquasilk,PER,Deodorant,6x400ml,27.52,2019-01-01,,Active
+PER-1134,Aquasilk Hand Soap 24x75ml,Aquasilk,PER,Hand Soap,24x75ml,41.75,2025-07-31,,New
+PER-1135,Aquasilk Conditioner 6x400ml,Aquasilk,PER,Conditioner,6x400ml,37.38,2019-01-01,,Active
+PER-1136,Velora Sun Cream SPF50 24x75ml,Velora,PER,Sun Cream SPF50,24x75ml,24.2,2019-01-01,,Active
+PER-1137,Aquasilk Toothpaste 12x250ml,Aquasilk,PER,Toothpaste,12x250ml,29.04,2024-10-06,,New
+PER-1138,NordFresh Deodorant 6x400ml,NordFresh,PER,Deodorant,6x400ml,30.21,2019-01-01,,Active
+PER-1139,NordFresh Hand Soap 12x250ml,NordFresh,PER,Hand Soap,12x250ml,22.51,2019-01-01,,Active
+PER-1140,Aquasilk Body Lotion 6x400ml,Aquasilk,PER,Body Lotion,6x400ml,33.82,2019-01-01,,Active
+PER-1141,NordFresh Conditioner 12x250ml,NordFresh,PER,Conditioner,12x250ml,29.34,2019-01-01,,Active
+PER-1142,Velora Conditioner 12x250ml,Velora,PER,Conditioner,12x250ml,26.04,2019-01-01,,Active
+PER-1143,Aquasilk Sun Cream SPF50 12x250ml,Aquasilk,PER,Sun Cream SPF50,12x250ml,42.75,2019-01-01,,Active
+PER-1144,Velora Hand Soap 6x400ml,Velora,PER,Hand Soap,6x400ml,21.31,2019-01-01,,Active
+PER-1145,Velora Body Lotion 24x75ml,Velora,PER,Body Lotion,24x75ml,36.86,2019-01-01,,Active
+PER-1146,Dermaline Toothpaste 12x250ml,Dermaline,PER,Toothpaste,12x250ml,23.82,2019-01-01,,Active
+PER-1147,Velora Body Lotion 12x250ml,Velora,PER,Body Lotion,12x250ml,39.62,2019-01-01,2024-08-24,Discontinued
+PER-1148,Aquasilk Shower Gel 12x250ml,Aquasilk,PER,Shower Gel,12x250ml,33.58,2019-01-01,,Active
+PER-1149,Velora Razor Blades 12x250ml,Velora,PER,Razor Blades,12x250ml,44.13,2019-01-01,,Active
+PER-1150,Velora Sun Cream SPF50 6x400ml,Velora,PER,Sun Cream SPF50,6x400ml,33.66,2019-01-01,,Active
+BAB-1151,TinySteps Baby Lotion 4x packs,TinySteps,BAB,Baby Lotion,4x packs,40.85,2019-01-01,,Active
+BAB-1152,SoftCloud Diapers S3 6x packs,SoftCloud,BAB,Diapers S3,6x packs,46.15,2025-01-08,,New
+BAB-1153,SoftCloud Baby Wipes 4x packs,SoftCloud,BAB,Baby Wipes,4x packs,43.56,2019-01-01,,Active
+BAB-1154,TinySteps Diapers S3 4x packs,TinySteps,BAB,Diapers S3,4x packs,34.75,2019-01-01,,Active
+BAB-1155,TinySteps Baby Wipes 4x packs,TinySteps,BAB,Baby Wipes,4x packs,57.02,2019-01-01,,Active
+BAB-1156,TinySteps Baby Wipes 6x packs,TinySteps,BAB,Baby Wipes,6x packs,47.26,2019-01-01,,Active
+BAB-1157,SoftCloud Diapers S3 4x packs,SoftCloud,BAB,Diapers S3,4x packs,48.66,2019-01-01,,Active
+BAB-1158,Little Bloom Diaper Pants 12x units,Little Bloom,BAB,Diaper Pants,12x units,51.15,2019-01-01,,Active
+BAB-1159,SoftCloud Baby Shampoo 4x packs,SoftCloud,BAB,Baby Shampoo,4x packs,48.05,2019-01-01,,Active
+BAB-1160,Little Bloom Baby Shampoo 6x packs,Little Bloom,BAB,Baby Shampoo,6x packs,54.01,2019-01-01,,Active
+BAB-1161,TinySteps Diapers S5 12x units,TinySteps,BAB,Diapers S5,12x units,44.01,2019-01-01,2024-11-29,Discontinued
+BAB-1162,TinySteps Baby Puree 12x units,TinySteps,BAB,Baby Puree,12x units,51.0,2019-01-01,,Active
+BAB-1163,SoftCloud Baby Lotion 4x packs,SoftCloud,BAB,Baby Lotion,4x packs,47.2,2019-01-01,2025-02-10,Discontinued
+BAB-1164,Little Bloom Diaper Pants 4x packs,Little Bloom,BAB,Diaper Pants,4x packs,40.93,2019-01-01,,Active
+BAB-1165,SoftCloud Diapers S4 12x units,SoftCloud,BAB,Diapers S4,12x units,30.55,2019-01-01,,Active
+BAB-1166,SoftCloud Infant Cereal 12x units,SoftCloud,BAB,Infant Cereal,12x units,41.68,2019-01-01,,Active
+BAB-1167,Little Bloom Diapers S4 6x packs,Little Bloom,BAB,Diapers S4,6x packs,58.2,2019-01-01,,Active
+BAB-1168,TinySteps Infant Cereal 6x packs,TinySteps,BAB,Infant Cereal,6x packs,47.62,2019-01-01,,Active
+BAB-1169,TinySteps Diaper Pants 6x packs,TinySteps,BAB,Diaper Pants,6x packs,54.06,2019-01-01,,Active
+BAB-1170,Little Bloom Diapers S4 12x units,Little Bloom,BAB,Diapers S4,12x units,57.37,2019-01-01,,Active
+BAB-1171,Little Bloom Baby Lotion 6x packs,Little Bloom,BAB,Baby Lotion,6x packs,29.91,2019-01-01,,Active
+BAB-1172,TinySteps Diapers S4 6x packs,TinySteps,BAB,Diapers S4,6x packs,30.27,2019-01-01,,Active
+BAB-1173,TinySteps Baby Shampoo 4x packs,TinySteps,BAB,Baby Shampoo,4x packs,30.53,2019-01-01,,Active
+BAB-1174,SoftCloud Baby Lotion 12x units,SoftCloud,BAB,Baby Lotion,12x units,52.88,2025-08-06,,New
+BAB-1175,Little Bloom Nappy Cream 4x packs,Little Bloom,BAB,Nappy Cream,4x packs,58.76,2019-01-01,,Active
+BAB-1176,Little Bloom Diapers S5 12x units,Little Bloom,BAB,Diapers S5,12x units,58.85,2019-01-01,,Active
+BAB-1177,TinySteps Baby Shampoo 12x units,TinySteps,BAB,Baby Shampoo,12x units,33.9,2019-01-01,,Active
+BAB-1178,TinySteps Diapers S3 12x units,TinySteps,BAB,Diapers S3,12x units,51.84,2019-01-01,,Active
+BAB-1179,TinySteps Baby Puree 4x packs,TinySteps,BAB,Baby Puree,4x packs,52.43,2019-01-01,,Active
+BAB-1180,Little Bloom Baby Shampoo 12x units,Little Bloom,BAB,Baby Shampoo,12x units,36.1,2019-01-01,,Active

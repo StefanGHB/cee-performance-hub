@@ -1,0 +1,4 @@
+/// Folder containing the Parquet star-schema files produced by the ETL. Change this one value to move the project to another machine.
+expression DataFolder = "C:\PowerBI\CEE-Performance-Hub\data\model\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 7a1663d8-daf6-42ed-a687-fa66917081d8
+

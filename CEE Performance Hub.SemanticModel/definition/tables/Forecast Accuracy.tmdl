@@ -1,0 +1,59 @@
+/// 6-month hold-out accuracy per series: ETS vs seasonal-naive benchmark.
+table 'Forecast Accuracy'
+	lineageTag: eb6403bf-80a8-4382-8fbd-b868e0378ac7
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: b701c55d-5fce-45c0-9e66-3ecf01e6dfa4
+		sourceColumn: Country Code
+
+	column 'Category ID'
+		dataType: string
+		isHidden
+		lineageTag: f05f8346-70ce-4f5f-8f66-e3c81c9ea45c
+		sourceColumn: Category ID
+
+	column Model
+		dataType: string
+		lineageTag: e3b72457-c9a7-43a6-9b47-a3f55bce4faf
+		sourceColumn: Model
+
+	column MAPE
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 435dcfad-0513-4f80-b23c-294c743c0a51
+		summarizeBy: none
+		sourceColumn: MAPE
+
+	column Bias
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 3f2e4c38-68d9-4d77-856a-cfbb8f5c8937
+		summarizeBy: none
+		sourceColumn: Bias
+
+	column 'Abs Error EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 57a8e870-3ced-4478-8798-45d0efead912
+		summarizeBy: none
+		sourceColumn: Abs Error EUR
+
+	column 'Actual EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 9a0258c7-cc68-4484-9695-de423848a522
+		summarizeBy: none
+		sourceColumn: Actual EUR
+
+	partition 'Forecast Accuracy' = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "forecast_accuracy.parquet"))
+				in
+				    Source
+

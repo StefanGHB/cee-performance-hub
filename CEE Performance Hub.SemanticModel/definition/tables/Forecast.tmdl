@@ -1,0 +1,77 @@
+/// ETS statistical forecast with 80%/95% prediction intervals (back-test + forward).
+table Forecast
+	lineageTag: 591f4f00-3986-4905-89d4-692edee65f44
+
+	column Month
+		dataType: dateTime
+		isHidden
+		formatString: dd mmm yyyy
+		lineageTag: ebdf1916-509f-444e-9f61-93db717eca59
+		sourceColumn: Month
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: 43e387a0-816a-4f9f-9d4f-bf0e435f08f8
+		sourceColumn: Country Code
+
+	column 'Category ID'
+		dataType: string
+		isHidden
+		lineageTag: d46bfbaa-80a0-496b-97a1-0a35a5258c5a
+		sourceColumn: Category ID
+
+	column 'Forecast Type'
+		dataType: string
+		isHidden
+		lineageTag: 90da28b2-5c58-4fe1-8f8e-83d0592d8d34
+		sourceColumn: Forecast Type
+
+	column 'Forecast EUR'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 84f66625-5dcb-4d44-8f5a-3445ec08e83a
+		summarizeBy: none
+		sourceColumn: Forecast EUR
+
+	column 'Lower 80'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: b6f8040d-f70c-4516-b700-e89df631fbb5
+		summarizeBy: none
+		sourceColumn: Lower 80
+
+	column 'Upper 80'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 0c9e9ad7-2440-49d6-b174-4c867b60b0da
+		summarizeBy: none
+		sourceColumn: Upper 80
+
+	column 'Lower 95'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: 62b4b9b3-111d-46ed-a57a-0af6ea70e253
+		summarizeBy: none
+		sourceColumn: Lower 95
+
+	column 'Upper 95'
+		dataType: double
+		isHidden
+		formatString: #,0
+		lineageTag: c38f65e0-4c21-47d3-a238-99d664782afd
+		summarizeBy: none
+		sourceColumn: Upper 95
+
+	partition Forecast = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "fact_forecast.parquet"))
+				in
+				    Source
+

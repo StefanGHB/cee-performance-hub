@@ -1,0 +1,1108 @@
+[
+{
+"name": "Date",
+"mode": "Import",
+"description": "Calendar 2023-2027. Reporting cut-off (last closed month): 30 Sep 2026.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_date.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Date",
+"dataType": "DateTime",
+"sourceColumn": "Date",
+"formatString": "dd mmm yyyy",
+"isKey": true
+},
+{
+"name": "Year",
+"dataType": "Int64",
+"sourceColumn": "Year",
+"summarizeBy": "None",
+"formatString": "0"
+},
+{
+"name": "Quarter",
+"dataType": "String",
+"sourceColumn": "Quarter"
+},
+{
+"name": "Year Quarter",
+"dataType": "String",
+"sourceColumn": "Year Quarter",
+"sortByColumn": "Year Quarter Sort"
+},
+{
+"name": "Year Quarter Sort",
+"dataType": "Int64",
+"sourceColumn": "Year Quarter Sort",
+"summarizeBy": "None",
+"formatString": "0",
+"isHidden": true
+},
+{
+"name": "Month No",
+"dataType": "Int64",
+"sourceColumn": "Month No",
+"summarizeBy": "None",
+"formatString": "#,0"
+},
+{
+"name": "Month",
+"dataType": "String",
+"sourceColumn": "Month",
+"sortByColumn": "Month No"
+},
+{
+"name": "Month Short",
+"dataType": "String",
+"sourceColumn": "Month Short",
+"sortByColumn": "Month No"
+},
+{
+"name": "Year Month",
+"dataType": "String",
+"sourceColumn": "Year Month",
+"sortByColumn": "Year Month Sort"
+},
+{
+"name": "Year Month Sort",
+"dataType": "Int64",
+"sourceColumn": "Year Month Sort",
+"summarizeBy": "None",
+"formatString": "0",
+"isHidden": true
+},
+{
+"name": "Month Start",
+"dataType": "DateTime",
+"sourceColumn": "Month Start",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "ISO Week",
+"dataType": "Int64",
+"sourceColumn": "ISO Week",
+"summarizeBy": "None",
+"formatString": "#,0"
+},
+{
+"name": "Weekday",
+"dataType": "String",
+"sourceColumn": "Weekday",
+"sortByColumn": "Weekday No"
+},
+{
+"name": "Weekday No",
+"dataType": "Int64",
+"sourceColumn": "Weekday No",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Is Weekend",
+"dataType": "Boolean",
+"sourceColumn": "Is Weekend"
+},
+{
+"name": "Is Actual Period",
+"dataType": "Boolean",
+"sourceColumn": "Is Actual Period",
+"isHidden": true
+},
+{
+"name": "Period Type",
+"dataType": "String",
+"sourceColumn": "Period Type"
+},
+{
+"name": "Month Offset",
+"dataType": "Int64",
+"sourceColumn": "Month Offset",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Year Offset",
+"dataType": "Int64",
+"sourceColumn": "Year Offset",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Is YTD Month",
+"dataType": "Boolean",
+"sourceColumn": "Is YTD Month",
+"isHidden": true
+}
+]
+},
+{
+"name": "Country",
+"mode": "Import",
+"description": "Operating countries with country manager (used for dynamic row-level security).",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_country.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code"
+},
+{
+"name": "Country",
+"dataType": "String",
+"sourceColumn": "Country",
+"dataCategory": "Country"
+},
+{
+"name": "Region",
+"dataType": "String",
+"sourceColumn": "Region"
+},
+{
+"name": "Currency",
+"dataType": "String",
+"sourceColumn": "Currency"
+},
+{
+"name": "Country Manager",
+"dataType": "String",
+"sourceColumn": "Country Manager"
+},
+{
+"name": "Manager Email",
+"dataType": "String",
+"sourceColumn": "Manager Email",
+"isHidden": true
+}
+]
+},
+{
+"name": "Category",
+"mode": "Import",
+"description": "Product categories (budget is set at this grain).",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_category.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Category ID",
+"dataType": "String",
+"sourceColumn": "Category ID",
+"isHidden": true
+},
+{
+"name": "Category",
+"dataType": "String",
+"sourceColumn": "Category",
+"sortByColumn": "Category Sort"
+},
+{
+"name": "Category Sort",
+"dataType": "Int64",
+"sourceColumn": "Category Sort",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "Product",
+"mode": "Import",
+"description": "Product master (PIM) incl. 'Unmapped SKU' members created by the DQ02 rule.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_product.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "SKU",
+"dataType": "String",
+"sourceColumn": "SKU"
+},
+{
+"name": "Product",
+"dataType": "String",
+"sourceColumn": "Product"
+},
+{
+"name": "Brand",
+"dataType": "String",
+"sourceColumn": "Brand"
+},
+{
+"name": "Category ID",
+"dataType": "String",
+"sourceColumn": "Category ID",
+"isHidden": true
+},
+{
+"name": "Variant",
+"dataType": "String",
+"sourceColumn": "Variant"
+},
+{
+"name": "Pack Size",
+"dataType": "String",
+"sourceColumn": "Pack Size"
+},
+{
+"name": "Product Status",
+"dataType": "String",
+"sourceColumn": "Product Status"
+},
+{
+"name": "Launch Date",
+"dataType": "DateTime",
+"sourceColumn": "Launch Date",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "Discontinued Date",
+"dataType": "DateTime",
+"sourceColumn": "Discontinued Date",
+"formatString": "dd mmm yyyy"
+}
+]
+},
+{
+"name": "Customer",
+"mode": "Import",
+"description": "B2B customers (CRM) with channel, sales rep, acquisition cohort and churn status.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_customer.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Customer Code",
+"dataType": "String",
+"sourceColumn": "Customer Code"
+},
+{
+"name": "Customer",
+"dataType": "String",
+"sourceColumn": "Customer",
+"defaultLabel": true
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code"
+},
+{
+"name": "City",
+"dataType": "String",
+"sourceColumn": "City"
+},
+{
+"name": "Home Warehouse",
+"dataType": "String",
+"sourceColumn": "Home Warehouse"
+},
+{
+"name": "Channel",
+"dataType": "String",
+"sourceColumn": "Channel"
+},
+{
+"name": "Sales Rep",
+"dataType": "String",
+"sourceColumn": "Sales Rep"
+},
+{
+"name": "Customer Since",
+"dataType": "DateTime",
+"sourceColumn": "Customer Since",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "Churn Date",
+"dataType": "DateTime",
+"sourceColumn": "Churn Date",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "Customer Status",
+"dataType": "String",
+"sourceColumn": "Customer Status"
+},
+{
+"name": "Acquisition Cohort",
+"dataType": "String",
+"sourceColumn": "Acquisition Cohort"
+}
+]
+},
+{
+"name": "Warehouse",
+"mode": "Import",
+"description": "Distribution centres (WMS).",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_warehouse.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Warehouse Code",
+"dataType": "String",
+"sourceColumn": "Warehouse Code"
+},
+{
+"name": "Warehouse",
+"dataType": "String",
+"sourceColumn": "Warehouse"
+},
+{
+"name": "Warehouse City",
+"dataType": "String",
+"sourceColumn": "Warehouse City"
+},
+{
+"name": "Warehouse Country",
+"dataType": "String",
+"sourceColumn": "Warehouse Country"
+}
+]
+},
+{
+"name": "P&L Line",
+"mode": "Import",
+"description": "Management P&L structure used by the P&L matrix.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dim_pnl_line.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "P&L Key",
+"dataType": "String",
+"sourceColumn": "P&L Key",
+"isHidden": true
+},
+{
+"name": "P&L Line",
+"dataType": "String",
+"sourceColumn": "P&L Line",
+"sortByColumn": "P&L Sort"
+},
+{
+"name": "P&L Sort",
+"dataType": "Int64",
+"sourceColumn": "P&L Sort",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Line Type",
+"dataType": "String",
+"sourceColumn": "Line Type",
+"isHidden": true
+},
+{
+"name": "Is Ratio",
+"dataType": "Int64",
+"sourceColumn": "Is Ratio",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "Sales",
+"mode": "Import",
+"description": "Invoiced order lines (ERP). Grain: order line. Amounts in EUR at monthly average FX.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"fact_sales.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Order ID",
+"dataType": "String",
+"sourceColumn": "Order ID",
+"isHidden": true
+},
+{
+"name": "Line No",
+"dataType": "Int64",
+"sourceColumn": "Line No",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Order Date",
+"dataType": "DateTime",
+"sourceColumn": "Order Date",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Promised Date",
+"dataType": "DateTime",
+"sourceColumn": "Promised Date",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Ship Date",
+"dataType": "DateTime",
+"sourceColumn": "Ship Date",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Delivery Date",
+"dataType": "DateTime",
+"sourceColumn": "Delivery Date",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Customer Code",
+"dataType": "String",
+"sourceColumn": "Customer Code",
+"isHidden": true
+},
+{
+"name": "SKU",
+"dataType": "String",
+"sourceColumn": "SKU",
+"isHidden": true
+},
+{
+"name": "Warehouse Code",
+"dataType": "String",
+"sourceColumn": "Warehouse Code",
+"isHidden": true
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "Transaction Currency",
+"dataType": "String",
+"sourceColumn": "Transaction Currency",
+"isHidden": true
+},
+{
+"name": "Functional Currency",
+"dataType": "String",
+"sourceColumn": "Functional Currency",
+"isHidden": true
+},
+{
+"name": "Is Promo",
+"dataType": "Int64",
+"sourceColumn": "Is Promo",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Qty Ordered",
+"dataType": "Int64",
+"sourceColumn": "Qty Ordered",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Qty Delivered",
+"dataType": "Int64",
+"sourceColumn": "Qty Delivered",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Discount %",
+"dataType": "Double",
+"sourceColumn": "Discount %",
+"summarizeBy": "None",
+"formatString": "0.0%",
+"isHidden": true
+},
+{
+"name": "Discount Imputed",
+"dataType": "Int64",
+"sourceColumn": "Discount Imputed",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "FX Rate",
+"dataType": "Double",
+"sourceColumn": "FX Rate",
+"summarizeBy": "None",
+"formatString": "#,0.0000",
+"isHidden": true
+},
+{
+"name": "Net Sales LCY",
+"dataType": "Double",
+"sourceColumn": "Net Sales LCY",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Gross Sales EUR",
+"dataType": "Double",
+"sourceColumn": "Gross Sales EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Discount EUR",
+"dataType": "Double",
+"sourceColumn": "Discount EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Net Sales EUR",
+"dataType": "Double",
+"sourceColumn": "Net Sales EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Net Sales EUR @PY FX",
+"dataType": "Double",
+"sourceColumn": "Net Sales EUR @PY FX",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "COGS EUR",
+"dataType": "Double",
+"sourceColumn": "COGS EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "COGS Estimated",
+"dataType": "Int64",
+"sourceColumn": "COGS Estimated",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Unfulfilled Net EUR",
+"dataType": "Double",
+"sourceColumn": "Unfulfilled Net EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Lead Time Days",
+"dataType": "Int64",
+"sourceColumn": "Lead Time Days",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "On Time",
+"dataType": "Int64",
+"sourceColumn": "On Time",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "In Full",
+"dataType": "Int64",
+"sourceColumn": "In Full",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "OTIF",
+"dataType": "Int64",
+"sourceColumn": "OTIF",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "Budget",
+"mode": "Import",
+"description": "FP&A sales & gross-margin budget. Grain: month x country x category.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"fact_budget.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Month",
+"dataType": "DateTime",
+"sourceColumn": "Month",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "Category ID",
+"dataType": "String",
+"sourceColumn": "Category ID",
+"isHidden": true
+},
+{
+"name": "Budget Net Sales EUR",
+"dataType": "Double",
+"sourceColumn": "Budget Net Sales EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Budget Gross Margin EUR",
+"dataType": "Double",
+"sourceColumn": "Budget Gross Margin EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Budget COGS EUR",
+"dataType": "Double",
+"sourceColumn": "Budget COGS EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "Opex",
+"mode": "Import",
+"description": "Operating expenses actual vs budget (GL). Grain: month x country x account.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"fact_opex.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Month",
+"dataType": "DateTime",
+"sourceColumn": "Month",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "P&L Key",
+"dataType": "String",
+"sourceColumn": "P&L Key",
+"isHidden": true
+},
+{
+"name": "Actual EUR",
+"dataType": "Double",
+"sourceColumn": "Actual EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Budget EUR",
+"dataType": "Double",
+"sourceColumn": "Budget EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "Inventory",
+"mode": "Import",
+"description": "Month-end inventory snapshots (WMS). Semi-additive: use closing balance measures.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"fact_inventory.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Snapshot Date",
+"dataType": "DateTime",
+"sourceColumn": "Snapshot Date",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Warehouse Code",
+"dataType": "String",
+"sourceColumn": "Warehouse Code",
+"isHidden": true
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "SKU",
+"dataType": "String",
+"sourceColumn": "SKU",
+"isHidden": true
+},
+{
+"name": "On Hand Qty",
+"dataType": "Int64",
+"sourceColumn": "On Hand Qty",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "On Hand Value EUR",
+"dataType": "Double",
+"sourceColumn": "On Hand Value EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Stockout Days",
+"dataType": "Int64",
+"sourceColumn": "Stockout Days",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Stock Status",
+"dataType": "String",
+"sourceColumn": "Stock Status",
+"isHidden": true
+}
+]
+},
+{
+"name": "FX Rates",
+"mode": "Import",
+"description": "Monthly average FX rates, local currency units per 1 EUR (Treasury).",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"fact_fx.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Month",
+"dataType": "DateTime",
+"sourceColumn": "Month",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Currency",
+"dataType": "String",
+"sourceColumn": "Currency",
+"isHidden": true
+},
+{
+"name": "LCY per EUR",
+"dataType": "Double",
+"sourceColumn": "LCY per EUR",
+"summarizeBy": "None",
+"formatString": "#,0.0000",
+"isHidden": true
+}
+]
+},
+{
+"name": "Forecast",
+"mode": "Import",
+"description": "ETS statistical forecast with 80%/95% prediction intervals (back-test + forward).",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"fact_forecast.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Month",
+"dataType": "DateTime",
+"sourceColumn": "Month",
+"formatString": "dd mmm yyyy",
+"isHidden": true
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "Category ID",
+"dataType": "String",
+"sourceColumn": "Category ID",
+"isHidden": true
+},
+{
+"name": "Forecast Type",
+"dataType": "String",
+"sourceColumn": "Forecast Type",
+"isHidden": true
+},
+{
+"name": "Forecast EUR",
+"dataType": "Double",
+"sourceColumn": "Forecast EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Lower 80",
+"dataType": "Double",
+"sourceColumn": "Lower 80",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Upper 80",
+"dataType": "Double",
+"sourceColumn": "Upper 80",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Lower 95",
+"dataType": "Double",
+"sourceColumn": "Lower 95",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Upper 95",
+"dataType": "Double",
+"sourceColumn": "Upper 95",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "Forecast Accuracy",
+"mode": "Import",
+"description": "6-month hold-out accuracy per series: ETS vs seasonal-naive benchmark.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"forecast_accuracy.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "Category ID",
+"dataType": "String",
+"sourceColumn": "Category ID",
+"isHidden": true
+},
+{
+"name": "Model",
+"dataType": "String",
+"sourceColumn": "Model"
+},
+{
+"name": "MAPE",
+"dataType": "Double",
+"sourceColumn": "MAPE",
+"summarizeBy": "None",
+"formatString": "0.0%"
+},
+{
+"name": "Bias",
+"dataType": "Double",
+"sourceColumn": "Bias",
+"summarizeBy": "None",
+"formatString": "0.0%"
+},
+{
+"name": "Abs Error EUR",
+"dataType": "Double",
+"sourceColumn": "Abs Error EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Actual EUR",
+"dataType": "Double",
+"sourceColumn": "Actual EUR",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+}
+]
+},
+{
+"name": "DQ Checks",
+"mode": "Import",
+"description": "Data-quality rule results per ETL run.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dq_results.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Check ID",
+"dataType": "String",
+"sourceColumn": "Check ID"
+},
+{
+"name": "Check",
+"dataType": "String",
+"sourceColumn": "Check"
+},
+{
+"name": "DQ Dimension",
+"dataType": "String",
+"sourceColumn": "DQ Dimension"
+},
+{
+"name": "Source",
+"dataType": "String",
+"sourceColumn": "Source"
+},
+{
+"name": "Business Rule",
+"dataType": "String",
+"sourceColumn": "Business Rule"
+},
+{
+"name": "Rows Checked",
+"dataType": "Int64",
+"sourceColumn": "Rows Checked",
+"summarizeBy": "None",
+"formatString": "#,0"
+},
+{
+"name": "Rows Failed",
+"dataType": "Int64",
+"sourceColumn": "Rows Failed",
+"summarizeBy": "None",
+"formatString": "#,0"
+},
+{
+"name": "Fail Rate",
+"dataType": "Double",
+"sourceColumn": "Fail Rate",
+"summarizeBy": "None",
+"formatString": "0.0%"
+},
+{
+"name": "Tolerance",
+"dataType": "Double",
+"sourceColumn": "Tolerance",
+"summarizeBy": "None",
+"formatString": "0.0%"
+},
+{
+"name": "Status",
+"dataType": "String",
+"sourceColumn": "Status",
+"sortByColumn": "Status Sort"
+},
+{
+"name": "Status Sort",
+"dataType": "Int64",
+"sourceColumn": "Status Sort",
+"summarizeBy": "None",
+"formatString": "#,0",
+"isHidden": true
+},
+{
+"name": "Action Taken",
+"dataType": "String",
+"sourceColumn": "Action Taken"
+}
+]
+},
+{
+"name": "DQ Exceptions",
+"mode": "Import",
+"description": "Row-level data-quality exceptions.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dq_exception_log.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Check ID",
+"dataType": "String",
+"sourceColumn": "Check ID"
+},
+{
+"name": "Check",
+"dataType": "String",
+"sourceColumn": "Check"
+},
+{
+"name": "Source",
+"dataType": "String",
+"sourceColumn": "Source"
+},
+{
+"name": "Record",
+"dataType": "String",
+"sourceColumn": "Record"
+},
+{
+"name": "Issue",
+"dataType": "String",
+"sourceColumn": "Issue"
+},
+{
+"name": "Observed Value",
+"dataType": "String",
+"sourceColumn": "Observed Value"
+}
+]
+},
+{
+"name": "DQ Load Log",
+"mode": "Import",
+"description": "Source feed load timeliness vs 3-day SLA.",
+"mExpression": "let\n    Source = Parquet.Document(File.Contents(DataFolder & \"dq_load_log.parquet\"))\nin\n    Source",
+"columns": [
+{
+"name": "Period",
+"dataType": "DateTime",
+"sourceColumn": "Period",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "Country Code",
+"dataType": "String",
+"sourceColumn": "Country Code",
+"isHidden": true
+},
+{
+"name": "Loaded On",
+"dataType": "DateTime",
+"sourceColumn": "Loaded On",
+"formatString": "dd mmm yyyy"
+},
+{
+"name": "Lag Days",
+"dataType": "Int64",
+"sourceColumn": "Lag Days",
+"summarizeBy": "None",
+"formatString": "#,0"
+},
+{
+"name": "SLA Days",
+"dataType": "Int64",
+"sourceColumn": "SLA Days",
+"summarizeBy": "None",
+"formatString": "#,0"
+},
+{
+"name": "SLA Status",
+"dataType": "String",
+"sourceColumn": "SLA Status"
+}
+]
+}
+]
