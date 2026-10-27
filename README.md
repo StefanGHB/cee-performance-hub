@@ -69,25 +69,30 @@ YTD Jan–Sep 2026, all closed months, compared like-for-like.
 
 Navigation runs through a side menu with page buttons. Year, country and category slicers are synced across pages.
 
-<details>
-<summary><b>Screenshots of all pages</b> (click to expand)</summary>
+### Sales & Customers
+Self-service explorer (pick any metric and dimension), price-volume-mix by category, top customers with drill-through, channel mix.
 
-#### Sales & Customers
 ![Sales & Customers](images/02-sales-customers.png)
 
-#### Profitability & P&L
+### Profitability & P&L
+Management P&L in EUR thousands vs budget and prior year, margin pressure by category, country profitability.
+
 ![Profitability & P&L](images/03-profitability-pnl.png)
 
-#### Operations & Supply Chain
+### Operations & Supply Chain
+OTIF heat map by distribution centre (note the Bucharest DC in Feb–Apr), stock-outs, days of inventory, cost-to-serve.
+
 ![Operations](images/04-operations.png)
 
-#### Forecast & Scenarios
+### Forecast & Scenarios
+ETS forecast with a 95% prediction interval, out-of-sample back-test, error vs seasonal naive, what-if scenario.
+
 ![Forecast & Scenarios](images/05-forecast-scenarios.png)
 
-#### Data Quality & Governance
-![Data Quality](images/06-data-quality.png)
+### Data Quality & Governance
+14 automated rules with tolerance and status, row-level exception log, source-feed timeliness against the SLA.
 
-</details>
+![Data Quality](images/06-data-quality.png)
 
 ---
 
